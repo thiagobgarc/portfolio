@@ -11,12 +11,7 @@ export const profile = {
   positioning:
     'General Assembly Software Engineering Immersive graduate building full-stack and mobile products with a deliberate focus on architecture.',
   location: null as string | null,
-  /**
-   * TODO(thiago): confirm the address to publish. Left null so the site
-   * fails loudly (see src/lib/seo.ts callers) instead of shipping a made-up
-   * email.
-   */
-  email: null as string | null,
+  email: 'thiagobuenogarcia1@gmail.com' as string | null,
   resumeUrl: '/resume/thiago-bueno-garcia-resume.pdf',
   currentlyBuilding: 'A CLI Brazilian Portuguese learning application',
   interests: ['soccer', 'volleyball', 'ukulele'],

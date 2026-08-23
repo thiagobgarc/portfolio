@@ -67,5 +67,6 @@ regression, not an edge case.
 
 ## Known gaps (see README for the current list)
 
-`profile.email` is `null` until Thiago supplies a real address (`src/data/profile.ts`) — the
-contact page renders a placeholder instead of a broken `mailto:` link until then. Don't invent one.
+Remaining placeholders are tracked in the README's "Needed from Thiago" section (résumé PDF,
+screenshots, production domain, deployment target). Don't fill any of them in with invented facts —
+leave them as visible placeholders until Thiago supplies the real thing.

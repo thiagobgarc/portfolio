@@ -78,8 +78,6 @@ the exact curation rules and why the build never fails even if GitHub is unreach
 The following are placeholders on purpose — this site does not fabricate facts. Supply these to
 finish the site:
 
-- **Email address** — `src/data/profile.ts` (`email: null`). The contact page shows a visible
-  placeholder note instead of a broken `mailto:` link until this is set.
 - **Résumé PDF** — expected at `public/resume/thiago-bueno-garcia-resume.pdf`
   (`profile.resumeUrl` in `src/data/profile.ts`); not yet present.
 - **Location / work authorization**, if you want either published.
