@@ -7,7 +7,9 @@ const { email } = Astro.props;
 ---
 
 <div class="flex flex-wrap items-center gap-2">
-  <a href={`mailto:${email}`} class="font-mono text-ink hover:text-accent">{email}</a>
+  <a href={`mailto:${email}`} class="hover-grow font-mono text-ink transition-colors hover:text-accent"
+    >{email}</a
+  >
   <button
     type="button"
     id="copy-email"

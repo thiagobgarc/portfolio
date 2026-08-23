@@ -23,7 +23,7 @@ const languages = [...new Set(repos.map((r) => r.language).filter((l): l is stri
     </div>
     <ExternalLink
       href="https://github.com/thiagobgarc?tab=repositories"
-      class="text-sm font-medium text-accent hover:underline"
+      class="hover-grow text-sm font-medium text-accent"
     >
       All repositories on GitHub
     </ExternalLink>
@@ -62,7 +62,7 @@ const languages = [...new Set(repos.map((r) => r.language).filter((l): l is stri
             href={repo.url}
             target="_blank"
             rel="noopener noreferrer"
-            class="block h-full rounded-lg border border-border p-5 transition-colors hover:border-accent"
+            class="card-lift block h-full rounded-lg border border-border p-5 hover:border-accent"
           >
             <div class="flex items-center justify-between gap-2">
               <h3 class="truncate font-mono text-sm font-medium text-ink">{repo.name}</h3>

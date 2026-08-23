@@ -34,7 +34,7 @@ import { profile, socialLinks } from '@/data/profile';
           {
             socialLinks.map((link) => (
               <li>
-                <ExternalLink href={link.url} class="text-ink hover:text-accent">
+                <ExternalLink href={link.url} class="hover-grow text-ink transition-colors hover:text-accent">
                   {link.label}
                 </ExternalLink>
               </li>

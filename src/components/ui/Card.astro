@@ -12,7 +12,7 @@ const Tag = href ? 'a' : 'div';
   {...href ? { href } : {}}
   class:list={[
     'group block rounded-lg border border-border bg-canvas p-6 transition-colors',
-    href && 'hover:border-accent',
+    href && ['card-lift', 'hover:border-accent'],
     className,
   ]}
 >

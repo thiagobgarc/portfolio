@@ -123,4 +123,43 @@
   .skip-link:focus {
     top: 1rem;
   }
+
+  /* Shared hover affordance for text links/nav items: grow instead of underline. */
+  .hover-grow {
+    display: inline-block;
+    transition: transform 150ms ease-out;
+  }
+
+  .hover-grow:hover {
+    transform: scale(1.06);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hover-grow:hover {
+      transform: none;
+    }
+  }
+
+  /* Shared hover affordance for clickable cards: lift + a soft accent-tinted shadow. */
+  .card-lift {
+    transition:
+      transform 200ms ease-out,
+      box-shadow 200ms ease-out,
+      border-color 200ms ease-out;
+  }
+
+  .card-lift:hover {
+    transform: translateY(-0.125rem) scale(1.015);
+    box-shadow: 8px 10px 16px -8px color-mix(in oklch, var(--accent) 22%, transparent);
+  }
+
+  .card-lift:active {
+    transform: translateY(0) scale(1);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .card-lift:hover {
+      transform: none;
+    }
+  }
 }

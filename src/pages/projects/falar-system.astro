@@ -16,7 +16,9 @@ const falarProjects = allProjects
   description="How the Portuguese-learning desktop app, mobile client, and GraphQL backend share one domain model across three different architectures."
 >
   <div class="mx-auto max-w-3xl px-4 py-16 sm:px-6">
-    <a href="/projects" class="text-sm text-ink-muted hover:text-ink">&larr; All projects</a>
+    <a href="/projects" class="hover-grow text-sm text-ink-muted transition-colors hover:text-ink"
+      >&larr; All projects</a
+    >
 
     <SectionHeading
       eyebrow="Project system"
@@ -78,7 +80,7 @@ const falarProjects = allProjects
         falarProjects.map((project) => (
           <a
             href={`/projects/${project.id}`}
-            class="block rounded-lg border border-border p-5 hover:border-accent"
+            class="card-lift block rounded-lg border border-border p-5 hover:border-accent"
           >
             <div class="flex flex-wrap items-center justify-between gap-2">
               <h3 class="font-semibold text-ink">{project.data.title}</h3>
@@ -98,9 +100,9 @@ const falarProjects = allProjects
     </div>
 
     <p class="mt-8 text-sm text-ink-muted">
-      Each repository is public: <ExternalLink href="https://github.com/thiagobgarc/portuguese-learning" class="text-accent hover:underline">portuguese-learning</ExternalLink>,{' '}
-      <ExternalLink href="https://github.com/thiagobgarc/falar-portuguese-mobile-backend" class="text-accent hover:underline">falar-portuguese-mobile-backend</ExternalLink>,{' '}
-      <ExternalLink href="https://github.com/thiagobgarc/falar-portuguese-mobile" class="text-accent hover:underline">falar-portuguese-mobile</ExternalLink>.
+      Each repository is public: <ExternalLink href="https://github.com/thiagobgarc/portuguese-learning" class="hover-grow text-accent">portuguese-learning</ExternalLink>,{' '}
+      <ExternalLink href="https://github.com/thiagobgarc/falar-portuguese-mobile-backend" class="hover-grow text-accent">falar-portuguese-mobile-backend</ExternalLink>,{' '}
+      <ExternalLink href="https://github.com/thiagobgarc/falar-portuguese-mobile" class="hover-grow text-accent">falar-portuguese-mobile</ExternalLink>.
     </p>
   </div>
 </BaseLayout>

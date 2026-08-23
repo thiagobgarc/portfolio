@@ -20,7 +20,10 @@ const posts = (await getCollection('writing')).sort(
         <ul class="mt-10 space-y-8">
           {posts.map((post) => (
             <li>
-              <a href={`/writing/${post.id}`} class="text-lg font-semibold text-ink hover:text-accent">
+              <a
+                href={`/writing/${post.id}`}
+                class="hover-grow text-lg font-semibold text-ink transition-colors hover:text-accent"
+              >
                 {post.data.title}
               </a>
               <p class="text-sm text-ink-muted">{formatDate(post.data.publishedAt)}</p>
