@@ -1,0 +1,21 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Hero from '@/components/sections/Hero.astro';
+import FeaturedProjects from '@/components/sections/FeaturedProjects.astro';
+import SkillsMatrix from '@/components/sections/SkillsMatrix.astro';
+import AboutPreview from '@/components/sections/AboutPreview.astro';
+import RepoGrid from '@/components/sections/RepoGrid.astro';
+import ContactSection from '@/components/sections/ContactSection.astro';
+import { personJsonLd } from '@/lib/seo';
+
+const jsonLd = personJsonLd(Astro.site?.toString() ?? Astro.url.origin);
+---
+
+<BaseLayout jsonLd={jsonLd}>
+  <Hero />
+  <FeaturedProjects />
+  <SkillsMatrix />
+  <AboutPreview />
+  <RepoGrid />
+  <ContactSection />
+</BaseLayout>

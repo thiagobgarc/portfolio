@@ -1,0 +1,75 @@
+---
+import { getCollection } from 'astro:content';
+import SectionHeading from '@/components/ui/SectionHeading.astro';
+import Card from '@/components/ui/Card.astro';
+import Tag from '@/components/ui/Tag.astro';
+
+const projects = (await getCollection('projects')).sort((a, b) => a.data.order - b.data.order);
+
+const falarEntries = projects.filter((p) => p.data.system === 'falar');
+const standalone = projects.filter((p) => p.data.system !== 'falar');
+
+type FeaturedCard = {
+  href: string;
+  title: string;
+  summary: string;
+  stack: string[];
+  meta: string;
+};
+
+const falarCard: FeaturedCard | null = falarEntries.length
+  ? {
+      href: '/projects/falar-system',
+      title: 'Falar: one product, three architectures',
+      summary:
+        'A Brazilian Portuguese learning product built as a desktop app, a mobile client, and a GraphQL backend — three repositories sharing one domain model.',
+      stack: ['Electron', 'Flutter', 'GraphQL', 'PostgreSQL'],
+      meta: `${falarEntries.length} repositories`,
+    }
+  : null;
+
+const standaloneCards: FeaturedCard[] = standalone.map((p) => ({
+  href: `/projects/${p.id}`,
+  title: p.data.title,
+  summary: p.data.summary,
+  stack: p.data.stack,
+  meta: p.data.status.replace('-', ' '),
+}));
+
+const cards = falarCard ? [falarCard, ...standaloneCards] : standaloneCards;
+---
+
+<section class="mx-auto max-w-content px-4 py-16 sm:px-6">
+  <SectionHeading
+    eyebrow="Selected work"
+    title="Featured projects"
+    description="Shipped, in progress, and honestly labeled either way."
+  />
+
+  <div class="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+    {
+      cards.map((card) => (
+        <Card href={card.href} class="flex h-full flex-col justify-between">
+          <div>
+            <p class="font-mono text-xs uppercase tracking-wide text-ink-muted">{card.meta}</p>
+            <h3 class="mt-2 text-lg font-semibold text-ink group-hover:text-accent">
+              {card.title}
+            </h3>
+            <p class="mt-2 text-sm text-ink-muted">{card.summary}</p>
+          </div>
+          <div class="mt-4 flex flex-wrap gap-2">
+            {card.stack.slice(0, 4).map((item) => (
+              <Tag>{item}</Tag>
+            ))}
+          </div>
+        </Card>
+      ))
+    }
+  </div>
+
+  <div class="mt-8">
+    <a href="/projects" class="text-sm font-medium text-accent hover:underline"
+      >See all projects &rarr;</a
+    >
+  </div>
+</section>

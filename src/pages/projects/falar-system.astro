@@ -1,0 +1,106 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import SectionHeading from '@/components/ui/SectionHeading.astro';
+import Tag from '@/components/ui/Tag.astro';
+import ExternalLink from '@/components/ui/ExternalLink.astro';
+
+const allProjects = await getCollection('projects');
+const falarProjects = allProjects
+  .filter((p) => p.data.system === 'falar')
+  .sort((a, b) => a.data.order - b.data.order);
+---
+
+<BaseLayout
+  title="Falar: One Product, Three Architectures"
+  description="How the Portuguese-learning desktop app, mobile client, and GraphQL backend share one domain model across three different architectures."
+>
+  <div class="mx-auto max-w-3xl px-4 py-16 sm:px-6">
+    <a href="/projects" class="text-sm text-ink-muted hover:text-ink">&larr; All projects</a>
+
+    <SectionHeading
+      eyebrow="Project system"
+      title="Falar: one product, three architectures"
+      description="Three repositories, one Brazilian Portuguese learning product, one shared domain model. Presented separately they read as three small projects. Presented together, the point is the architecture, not any single client."
+      as="h1"
+    />
+
+    <div class="mt-12 overflow-x-auto">
+      <div class="grid min-w-[640px] grid-cols-3 items-stretch gap-4 text-center">
+        <div class="rounded-lg border border-border p-4">
+          <p class="font-mono text-xs text-ink-muted">Desktop client</p>
+          <p class="mt-1 font-semibold text-ink">portuguese-learning</p>
+          <p class="mt-2 text-xs text-ink-muted">Electron + React</p>
+          <p class="mt-1 text-xs text-ink-muted">Event-sourced domain, in-process</p>
+        </div>
+        <div class="rounded-lg border-2 border-accent p-4">
+          <p class="font-mono text-xs text-accent">Shared contract</p>
+          <p class="mt-1 font-semibold text-ink">falar-portuguese-mobile-backend</p>
+          <p class="mt-2 text-xs text-ink-muted">Apollo Server + PostgreSQL</p>
+          <p class="mt-1 text-xs text-ink-muted">GraphQL API over HTTP</p>
+        </div>
+        <div class="rounded-lg border border-border p-4">
+          <p class="font-mono text-xs text-ink-muted">Mobile client</p>
+          <p class="mt-1 font-semibold text-ink">falar-portuguese-mobile</p>
+          <p class="mt-2 text-xs text-ink-muted">Flutter + Riverpod</p>
+          <p class="mt-1 text-xs text-ink-muted">Fake repo today, GraphQL when live</p>
+        </div>
+      </div>
+      <p class="mt-3 text-center text-xs text-ink-muted" aria-hidden="true">
+        Desktop persists domain events directly &middot; mobile will consume the same rules over
+        GraphQL once the backend is deployed
+      </p>
+    </div>
+
+    <div class="prose prose-neutral mt-12 max-w-none prose-p:text-ink-muted prose-strong:text-ink">
+      <h2>Why one product, three times</h2>
+      <p>
+        The desktop app owns the reference implementation: an event-sourced learning domain that
+        persists every review and mistake rather than overwriting state. That domain model &mdash;
+        what a review session is, how mastery is scored &mdash; is the thing being reused, not the
+        code. The mobile client and the backend service each re-express those same rules under a
+        different set of constraints: a backend that exposes them over GraphQL instead of an
+        in-process call, and a mobile client that consumes them the same way any external client
+        would, defaulting to fake data until the real backend is reachable.
+      </p>
+      <p>
+        <strong>The architecture is deliberately not identical across the three.</strong> Desktop
+        event-sources because a learning domain's history has real value. The backend persists
+        current state directly and skips event sourcing, because a GraphQL API answering "what is
+        true right now" doesn't need a replayable log. Same author, same instinct toward
+        separated layers, calibrated to what each piece actually needs &mdash; not reused
+        wholesale because it worked once.
+      </p>
+    </div>
+
+    <div class="mt-12 space-y-6">
+      {
+        falarProjects.map((project) => (
+          <a
+            href={`/projects/${project.id}`}
+            class="block rounded-lg border border-border p-5 hover:border-accent"
+          >
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <h3 class="font-semibold text-ink">{project.data.title}</h3>
+              <span class="font-mono text-xs text-ink-muted">
+                {project.data.status.replace('-', ' ')}
+              </span>
+            </div>
+            <p class="mt-1 text-sm text-ink-muted">{project.data.summary}</p>
+            <div class="mt-3 flex flex-wrap gap-2">
+              {project.data.stack.map((item) => (
+                <Tag>{item}</Tag>
+              ))}
+            </div>
+          </a>
+        ))
+      }
+    </div>
+
+    <p class="mt-8 text-sm text-ink-muted">
+      Each repository is public: <ExternalLink href="https://github.com/thiagobgarc/portuguese-learning" class="text-accent hover:underline">portuguese-learning</ExternalLink>,{' '}
+      <ExternalLink href="https://github.com/thiagobgarc/falar-portuguese-mobile-backend" class="text-accent hover:underline">falar-portuguese-mobile-backend</ExternalLink>,{' '}
+      <ExternalLink href="https://github.com/thiagobgarc/falar-portuguese-mobile" class="text-accent hover:underline">falar-portuguese-mobile</ExternalLink>.
+    </p>
+  </div>
+</BaseLayout>

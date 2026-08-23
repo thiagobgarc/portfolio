@@ -1,0 +1,19 @@
+---
+import Button from '@/components/ui/Button.astro';
+import { profile } from '@/data/profile';
+---
+
+<section class="border-t border-border bg-canvas-subtle">
+  <div class="mx-auto max-w-content px-4 py-16 text-center sm:px-6">
+    <h2 class="text-2xl font-semibold tracking-tight text-ink sm:text-3xl">
+      Let&rsquo;s talk about a role
+    </h2>
+    <p class="mx-auto mt-3 max-w-xl text-ink-muted">
+      Reach out directly, or start with the résumé and the projects above.
+    </p>
+    <div class="mt-8 flex flex-wrap justify-center gap-3">
+      <Button href="/contact">Get in touch</Button>
+      <Button href={profile.resumeUrl} variant="secondary">Download résumé</Button>
+    </div>
+  </div>
+</section>

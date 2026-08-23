@@ -1,0 +1,76 @@
+---
+import { primaryNav, writingEnabled } from '@/data/navigation';
+
+const items = writingEnabled ? [...primaryNav, { label: 'Writing', href: '/writing' }] : primaryNav;
+---
+
+<div class="sm:hidden">
+  <button
+    id="mobile-nav-toggle"
+    type="button"
+    class="rounded-md p-2 text-ink-muted hover:bg-canvas-subtle hover:text-ink"
+    aria-label="Open navigation menu"
+    aria-expanded="false"
+    aria-controls="mobile-nav-panel"
+  >
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        d="M4 6h16M4 12h16M4 18h16"></path>
+    </svg>
+  </button>
+
+  <div
+    id="mobile-nav-panel"
+    hidden
+    class="absolute inset-x-0 top-full border-b border-border bg-canvas px-4 pb-4 shadow-lg"
+  >
+    <nav aria-label="Mobile">
+      <ul class="flex flex-col gap-1">
+        {
+          items.map((item) => (
+            <li>
+              <a
+                href={item.href}
+                class="block rounded-md px-3 py-2 text-base font-medium text-ink hover:bg-canvas-subtle"
+              >
+                {item.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+  </div>
+</div>
+
+<script is:inline>
+  (function () {
+    const toggle = document.getElementById('mobile-nav-toggle');
+    const panel = document.getElementById('mobile-nav-panel');
+    if (!toggle || !panel) return;
+
+    function setOpen(open) {
+      panel.hidden = !open;
+      toggle.setAttribute('aria-expanded', String(open));
+      toggle.setAttribute('aria-label', open ? 'Close navigation menu' : 'Open navigation menu');
+    }
+
+    toggle.addEventListener('click', function () {
+      setOpen(panel.hidden);
+    });
+
+    panel.addEventListener('click', function (event) {
+      if (event.target instanceof HTMLAnchorElement) setOpen(false);
+    });
+
+    document.addEventListener('keydown', function (event) {
+      if (event.key === 'Escape' && !panel.hidden) {
+        setOpen(false);
+        toggle.focus();
+      }
+    });
+  })();
+</script>

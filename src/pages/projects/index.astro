@@ -1,0 +1,22 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import SectionHeading from '@/components/ui/SectionHeading.astro';
+import FeaturedProjects from '@/components/sections/FeaturedProjects.astro';
+import RepoGrid from '@/components/sections/RepoGrid.astro';
+---
+
+<BaseLayout
+  title="Projects"
+  description="Case studies and shipped work from Thiago Bueno Garcia, plus a live, curated feed of everything else on GitHub."
+>
+  <div class="mx-auto max-w-content px-4 pt-16 sm:px-6">
+    <SectionHeading
+      eyebrow="Work"
+      title="Projects"
+      description="Five repositories with real depth, and a curated, filterable view of everything else."
+      as="h1"
+    />
+  </div>
+  <FeaturedProjects />
+  <RepoGrid />
+</BaseLayout>

@@ -1,0 +1,23 @@
+---
+import { profile, socialLinks } from '@/data/profile';
+
+const year = new Date().getFullYear();
+---
+
+<footer class="border-t border-border">
+  <div
+    class="mx-auto flex max-w-content flex-col gap-4 px-4 py-8 text-sm text-ink-muted sm:flex-row sm:items-center sm:justify-between sm:px-6"
+  >
+    <p>&copy; {year} {profile.name}</p>
+    <div class="flex gap-4">
+      {
+        socialLinks.map((link) => (
+          <a href={link.url} target="_blank" rel="noopener noreferrer" class="hover:text-ink">
+            {link.label}
+          </a>
+        ))
+      }
+      <a href="/contact" class="hover:text-ink">Contact</a>
+    </div>
+  </div>
+</footer>

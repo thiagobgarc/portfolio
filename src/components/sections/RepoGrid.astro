@@ -1,0 +1,110 @@
+---
+import { getCuratedRepos } from '@/features/github';
+import ExternalLink from '@/components/ui/ExternalLink.astro';
+import LanguageDot from '@/components/ui/LanguageDot.astro';
+import { formatMonthYear } from '@/lib/utils';
+
+const { repos, usedFallback } = await getCuratedRepos();
+
+if (usedFallback && import.meta.env.PROD) {
+  console.warn('[RepoGrid] Rendering from the committed GitHub snapshot, not a live fetch.');
+}
+
+const languages = [...new Set(repos.map((r) => r.language).filter((l): l is string => l !== null))].sort();
+---
+
+<section class="mx-auto max-w-content px-4 py-16 sm:px-6" id="repos">
+  <div class="flex flex-wrap items-end justify-between gap-4">
+    <div>
+      <h2 class="text-2xl font-semibold tracking-tight text-ink sm:text-3xl">More on GitHub</h2>
+      <p class="mt-2 text-ink-muted">
+        Curated automatically at build time &mdash; forks and empty scaffolds excluded.
+      </p>
+    </div>
+    <ExternalLink
+      href="https://github.com/thiagobgarc?tab=repositories"
+      class="text-sm font-medium text-accent hover:underline"
+    >
+      All repositories on GitHub
+    </ExternalLink>
+  </div>
+
+  {
+    languages.length > 0 && (
+      <div class="mt-6 flex flex-wrap gap-2" role="group" aria-label="Filter by language">
+        <button
+          type="button"
+          data-filter="all"
+          class="repo-filter rounded-full border border-accent bg-accent px-3 py-1 text-xs font-medium text-accent-ink"
+          aria-pressed="true"
+        >
+          All
+        </button>
+        {languages.map((lang) => (
+          <button
+            type="button"
+            data-filter={lang}
+            class="repo-filter rounded-full border border-border px-3 py-1 text-xs font-medium text-ink-muted hover:border-accent"
+            aria-pressed="false"
+          >
+            {lang}
+          </button>
+        ))}
+      </div>
+    )
+  }
+
+  <ul id="repo-grid" class="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+    {
+      repos.map((repo) => (
+        <li data-language={repo.language ?? ''} class="repo-item">
+          <a
+            href={repo.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="block h-full rounded-lg border border-border p-5 transition-colors hover:border-accent"
+          >
+            <div class="flex items-center justify-between gap-2">
+              <h3 class="truncate font-mono text-sm font-medium text-ink">{repo.name}</h3>
+              {repo.stars > 0 && <span class="text-xs text-ink-muted">★ {repo.stars}</span>}
+            </div>
+            <p class="mt-2 line-clamp-2 text-sm text-ink-muted">
+              {repo.description ?? 'No description provided.'}
+            </p>
+            <div class="mt-4 flex items-center justify-between">
+              <LanguageDot language={repo.language} />
+              <span class="text-xs text-ink-muted">{formatMonthYear(repo.updatedAt)}</span>
+            </div>
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+</section>
+
+<script is:inline>
+  (function () {
+    const buttons = document.querySelectorAll('.repo-filter');
+    const items = document.querySelectorAll('#repo-grid .repo-item');
+
+    buttons.forEach(function (button) {
+      button.addEventListener('click', function () {
+        const filter = button.getAttribute('data-filter');
+
+        buttons.forEach(function (b) {
+          const active = b === button;
+          b.setAttribute('aria-pressed', String(active));
+          b.classList.toggle('border-accent', active);
+          b.classList.toggle('bg-accent', active);
+          b.classList.toggle('text-accent-ink', active);
+          b.classList.toggle('text-ink-muted', !active);
+        });
+
+        items.forEach(function (item) {
+          const matches = filter === 'all' || item.getAttribute('data-language') === filter;
+          item.style.display = matches ? '' : 'none';
+        });
+      });
+    });
+  })();
+</script>

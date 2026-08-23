@@ -1,0 +1,19 @@
+---
+import Button from '@/components/ui/Button.astro';
+import { profile } from '@/data/profile';
+---
+
+<section class="mx-auto max-w-content px-4 py-20 sm:px-6 sm:py-28">
+  <p class="font-mono text-sm text-accent">{profile.role}</p>
+  <h1 class="mt-3 max-w-3xl text-4xl font-semibold tracking-tight text-ink sm:text-5xl">
+    {profile.name}
+  </h1>
+  <p class="mt-6 max-w-2xl text-lg text-ink-muted sm:text-xl">
+    {profile.tagline}
+  </p>
+  <div class="mt-8 flex flex-wrap gap-3">
+    <Button href="/projects">View projects</Button>
+    <Button href={profile.resumeUrl} variant="secondary">Resume</Button>
+    <Button href="/contact" variant="secondary">Contact</Button>
+  </div>
+</section>

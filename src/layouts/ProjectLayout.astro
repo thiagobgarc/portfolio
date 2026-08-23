@@ -1,0 +1,86 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import Tag from '@/components/ui/Tag.astro';
+import ExternalLink from '@/components/ui/ExternalLink.astro';
+import { cx } from '@/lib/utils';
+
+interface Props {
+  title: string;
+  summary: string;
+  status: 'complete' | 'in-progress' | 'early-stage' | 'archived';
+  role: string;
+  stack: string[];
+  repoUrl: string;
+  liveUrl?: string | undefined;
+}
+
+const { title, summary, status, role, stack, repoUrl, liveUrl } = Astro.props;
+
+const statusStyles: Record<Props['status'], string> = {
+  complete: 'border-accent/40 text-accent',
+  'in-progress': 'border-accent/40 text-accent',
+  'early-stage': 'border-border text-ink-muted',
+  archived: 'border-border text-ink-muted',
+};
+
+const statusLabel: Record<Props['status'], string> = {
+  complete: 'Complete',
+  'in-progress': 'In progress',
+  'early-stage': 'Early stage',
+  archived: 'Archived',
+};
+---
+
+<BaseLayout title={title} description={summary}>
+  <article class="mx-auto max-w-3xl px-4 py-16 sm:px-6">
+    <a href="/projects" class="text-sm text-ink-muted hover:text-ink">&larr; All projects</a>
+
+    <header class="mt-6">
+      <div class="flex flex-wrap items-center gap-3">
+        <h1 class="text-3xl font-semibold tracking-tight text-ink sm:text-4xl">{title}</h1>
+        <span
+          class:list={[
+            'rounded-full border px-2.5 py-0.5 font-mono text-xs',
+            statusStyles[status],
+          ]}
+        >
+          {statusLabel[status]}
+        </span>
+      </div>
+      <p class="mt-4 text-lg text-ink-muted">{summary}</p>
+      <p class="mt-2 text-sm text-ink-muted">Role: {role}</p>
+
+      <div class="mt-4 flex flex-wrap gap-2">
+        {stack.map((item) => <Tag>{item}</Tag>)}
+      </div>
+
+      <div class="mt-6 flex flex-wrap gap-3">
+        <ExternalLink
+          href={repoUrl}
+          class="inline-flex items-center gap-2 rounded-md border border-border px-4 py-2 text-sm font-medium text-ink hover:bg-canvas-subtle"
+        >
+          View repository
+        </ExternalLink>
+        {
+          liveUrl && (
+            <ExternalLink
+              href={liveUrl}
+              class={cx(
+                'inline-flex items-center gap-2 rounded-md px-4 py-2 text-sm font-medium',
+                'bg-accent text-accent-ink hover:opacity-90',
+              )}
+            >
+              View live
+            </ExternalLink>
+          )
+        }
+      </div>
+    </header>
+
+    <div
+      class="prose prose-neutral mt-12 max-w-none prose-headings:font-semibold prose-headings:tracking-tight prose-headings:text-ink prose-p:text-ink-muted prose-a:text-accent prose-strong:text-ink prose-code:text-ink"
+    >
+      <slot />
+    </div>
+  </article>
+</BaseLayout>

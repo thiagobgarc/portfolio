@@ -1,0 +1,71 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import SectionHeading from '@/components/ui/SectionHeading.astro';
+import Tag from '@/components/ui/Tag.astro';
+import Button from '@/components/ui/Button.astro';
+import { profile } from '@/data/profile';
+import { skills } from '@/data/skills';
+import { education, currentActivity } from '@/data/experience';
+---
+
+<BaseLayout title="About" description={profile.positioning}>
+  <div class="mx-auto max-w-3xl px-4 py-16 sm:px-6">
+    <SectionHeading eyebrow="About" title={profile.name} as="h1" />
+
+    <div class="prose prose-neutral mt-8 max-w-none prose-p:text-ink-muted prose-strong:text-ink">
+      <p>
+        {profile.positioning} The pattern across the work on this site is deliberate: the same
+        Brazilian Portuguese learning product, built three times &mdash; as a desktop app, a
+        mobile client, and a standalone GraphQL backend &mdash; each time recalibrating the
+        architecture to what that platform actually needs rather than reusing the last one
+        wholesale. Building the same thing under different constraints is how the constraints
+        themselves get learned.
+      </p>
+      <p>
+        Currently {profile.currentlyBuilding.toLowerCase()}, working through LeetCode
+        problems, and looking to expand both technical depth and network. Off the keyboard: {profile.interests.join(
+          ', ',
+        )}.
+      </p>
+      <blockquote>
+        <p>&ldquo;{profile.bioQuote}&rdquo;</p>
+      </blockquote>
+    </div>
+
+    <div class="mt-12">
+      <h2 class="text-lg font-semibold text-ink">Education</h2>
+      <ul class="mt-4 space-y-4">
+        {
+          education.map((entry) => (
+            <li>
+              <p class="font-medium text-ink">
+                {entry.program} &mdash; {entry.institution}
+              </p>
+              <p class="text-sm text-ink-muted">{entry.period}</p>
+              <p class="mt-1 text-sm text-ink-muted">{entry.summary}</p>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+
+    <div class="mt-12">
+      <h2 class="text-lg font-semibold text-ink">Right now</h2>
+      <ul class="mt-4 list-inside list-disc space-y-1 text-ink-muted">
+        {currentActivity.map((entry) => <li>{entry.label}</li>)}
+      </ul>
+    </div>
+
+    <div class="mt-12">
+      <h2 class="text-lg font-semibold text-ink">Stack</h2>
+      <div class="mt-4 flex flex-wrap gap-2">
+        {skills.flatMap((group) => group.items).map((item) => <Tag>{item}</Tag>)}
+      </div>
+    </div>
+
+    <div class="mt-12 flex flex-wrap gap-3">
+      <Button href={profile.resumeUrl}>Download résumé</Button>
+      <Button href="/contact" variant="secondary">Get in touch</Button>
+    </div>
+  </div>
+</BaseLayout>

@@ -1,0 +1,23 @@
+---
+import SectionHeading from '@/components/ui/SectionHeading.astro';
+import { profile } from '@/data/profile';
+---
+
+<section class="mx-auto max-w-content px-4 py-16 sm:px-6">
+  <SectionHeading eyebrow="About" title="Building the same product three ways" />
+  <div class="mt-6 max-w-2xl space-y-4 text-ink-muted">
+    <p>
+      {profile.positioning} The recurring thread through the work: the same Brazilian Portuguese
+      learning product, rebuilt across desktop, mobile, and a standalone backend &mdash; each time
+      with the architecture calibrated to what that platform actually needs, not copy-pasted from
+      the last one.
+    </p>
+    <p>
+      Outside of that: {profile.currentlyBuilding.toLowerCase()}, working through LeetCode, and
+      {' '}{profile.interests.join(', ')} when not at a keyboard.
+    </p>
+  </div>
+  <a href="/about" class="mt-6 inline-block text-sm font-medium text-accent hover:underline">
+    More about me &rarr;
+  </a>
+</section>

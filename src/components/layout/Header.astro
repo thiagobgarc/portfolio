@@ -1,0 +1,20 @@
+---
+import Navigation from './Navigation.astro';
+import MobileNav from './MobileNav.astro';
+import ThemeToggle from './ThemeToggle.astro';
+import { profile } from '@/data/profile';
+---
+
+<header class="relative border-b border-border bg-canvas">
+  <div class="mx-auto flex max-w-content items-center justify-between px-4 py-4 sm:px-6">
+    <a href="/" class="text-sm font-semibold tracking-tight text-ink">
+      {profile.name}
+    </a>
+
+    <div class="flex items-center gap-2">
+      <Navigation />
+      <ThemeToggle />
+      <MobileNav />
+    </div>
+  </div>
+</header>

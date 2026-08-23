@@ -1,0 +1,34 @@
+---
+interface Props {
+  language: string | null;
+}
+
+const { language } = Astro.props;
+
+/** Approximate GitHub language colors, for the handful of languages this profile actually uses. */
+const COLORS: Record<string, string> = {
+  TypeScript: '#3178c6',
+  JavaScript: '#f1e05a',
+  Python: '#3572A5',
+  Dart: '#00B4AB',
+  Go: '#00ADD8',
+  Java: '#b07219',
+  HTML: '#e34c26',
+  CSS: '#563d7c',
+  Lua: '#000080',
+  Swift: '#F05138',
+  'C++': '#f34b7d',
+  C: '#555555',
+};
+
+const color = language ? (COLORS[language] ?? '#8b8b8b') : null;
+---
+
+{
+  language && color && (
+    <span class="inline-flex items-center gap-1.5 text-xs text-ink-muted">
+      <span class="h-2.5 w-2.5 shrink-0 rounded-full" style={`background-color: ${color}`} />
+      {language}
+    </span>
+  )
+}
