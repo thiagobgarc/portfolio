@@ -7,13 +7,13 @@ export type SocialLink = {
 export const profile = {
   name: 'Thiago Bueno Garcia',
   role: 'Software Engineer',
-  tagline: 'Software engineer who builds the same product across three architectures to learn what each one is actually for.',
+  tagline: 'I built the same Portuguese-learning app three times — desktop, mobile, and a GraphQL backend — picking a different architecture each time instead of reusing what worked last time.',
   positioning:
     'General Assembly Software Engineering Immersive graduate building full-stack and mobile products with a deliberate focus on architecture.',
   location: null as string | null,
   email: 'thiagobuenogarcia1@gmail.com' as string | null,
   resumeUrl: '/resume/thiago-bueno-garcia-resume.pdf',
-  currentlyBuilding: 'A CLI Brazilian Portuguese learning application',
+  currentlyBuilding: "building a website for my father's company",
   interests: ['soccer', 'volleyball', 'ukulele'],
   bioQuote: 'One thing remains the same, the architecture to build scalable clean code.',
 } as const;
