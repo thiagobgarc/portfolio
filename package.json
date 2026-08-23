@@ -7,6 +7,8 @@
   },
   "scripts": {
     "dev": "astro dev",
+    "generate:og": "node scripts/generate-og-images.mjs",
+    "prebuild": "npm run generate:og",
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
@@ -33,7 +35,7 @@
     "eslint": "^10.9.0",
     "eslint-plugin-astro": "^3.1.0",
     "globals": "^17.11.0",
-    "playwright": "^1.62.1",
+    "gray-matter": "^4.0.3",
     "prettier": "^3.9.6",
     "prettier-plugin-astro": "^0.14.1",
     "prettier-plugin-tailwindcss": "^0.8.1",

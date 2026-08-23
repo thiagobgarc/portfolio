@@ -12,9 +12,10 @@ interface Props {
   stack: string[];
   repoUrl: string;
   liveUrl?: string | undefined;
+  ogImage: string;
 }
 
-const { title, summary, status, role, stack, repoUrl, liveUrl } = Astro.props;
+const { title, summary, status, role, stack, repoUrl, liveUrl, ogImage } = Astro.props;
 
 const statusStyles: Record<Props['status'], string> = {
   complete: 'border-accent/40 text-accent',
@@ -31,7 +32,7 @@ const statusLabel: Record<Props['status'], string> = {
 };
 ---
 
-<BaseLayout title={title} description={summary}>
+<BaseLayout title={title} description={summary} ogImage={ogImage}>
   <article class="mx-auto max-w-3xl px-4 py-16 sm:px-6">
     <a href="/projects" class="text-sm text-ink-muted hover:text-ink">&larr; All projects</a>
 

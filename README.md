@@ -99,7 +99,19 @@ finish the site:
 
 ## Performance & accessibility
 
-Lighthouse scores have not yet been captured against a deployed build — do that once a deployment
-target exists and record the numbers here. Accessibility groundwork already in place: skip link,
-semantic landmarks, visible focus states, keyboard-operable nav/filters/theme-toggle,
-`prefers-reduced-motion` support, and both themes checked for contrast.
+Lighthouse (desktop and mobile presets, local production build via `astro preview`):
+
+| Category       | Desktop | Mobile |
+| -------------- | :-----: | :----: |
+| Performance    |   100   |  100   |
+| Accessibility  |   100   |  100   |
+| Best Practices |   100   |  100   |
+| SEO            |   100   |  100   |
+
+Re-run against the deployed URL once a host is chosen — localhost numbers don't account for real
+network latency, but they do confirm nothing in the page itself (JS weight, unsized images, missing
+metadata, contrast, unlabeled controls) is leaving points on the table.
+
+Accessibility groundwork in place: skip link, semantic landmarks, visible focus states,
+keyboard-operable nav/filters/theme-toggle, `prefers-reduced-motion` support, and both themes
+checked for contrast — confirmed by the accessibility score above, not just asserted.

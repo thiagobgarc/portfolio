@@ -22,6 +22,7 @@ const { Content } = await render(project);
   stack={project.data.stack}
   repoUrl={project.data.repoUrl}
   liveUrl={project.data.liveUrl}
+  ogImage={project.data.ogImage ?? `/images/og/${project.id}.png`}
 >
   <Content />
 </ProjectLayout>
