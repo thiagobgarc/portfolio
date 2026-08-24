@@ -1,6 +1,6 @@
 ---
 import SectionHeading from '@/components/ui/SectionHeading.astro';
-import Tag from '@/components/ui/Tag.astro';
+import SkillTag from '@/components/ui/SkillTag.astro';
 import { skills } from '@/data/skills';
 ---
 
@@ -16,7 +16,7 @@ import { skills } from '@/data/skills';
           </h3>
           <div class="mt-3 flex flex-wrap gap-2">
             {group.items.map((item) => (
-              <Tag>{item}</Tag>
+              <SkillTag name={item.name} projects={item.projects} />
             ))}
           </div>
         </div>
@@ -24,3 +24,32 @@ import { skills } from '@/data/skills';
     }
   </div>
 </section>
+
+<script is:inline>
+  (function () {
+    function clampPopover(wrap) {
+      const popover = wrap.querySelector('.skill-popover');
+      if (!popover) return;
+
+      popover.style.transform = '';
+      const rect = popover.getBoundingClientRect();
+      const margin = 8;
+      let shift = 0;
+
+      if (rect.left < margin) {
+        shift = margin - rect.left;
+      } else if (rect.right > window.innerWidth - margin) {
+        shift = window.innerWidth - margin - rect.right;
+      }
+
+      if (shift !== 0) {
+        popover.style.transform = `translateX(calc(-50% + ${shift}px))`;
+      }
+    }
+
+    document.querySelectorAll('.skill-tag-wrap').forEach((wrap) => {
+      wrap.addEventListener('mouseenter', () => clampPopover(wrap));
+      wrap.addEventListener('focusin', () => clampPopover(wrap));
+    });
+  })();
+</script>
