@@ -4,7 +4,47 @@ import { profile } from '@/data/profile';
 ---
 
 <section class="relative overflow-hidden">
-  <div class="gradient-flow pointer-events-none absolute inset-0" aria-hidden="true"></div>
+  <svg
+    id="hero-flow"
+    class="flow-ribbon pointer-events-none absolute inset-0 h-full w-full"
+    viewBox="0 0 1200 500"
+    preserveAspectRatio="none"
+    aria-hidden="true"
+  >
+    <defs>
+      <!-- Horizontal, viewBox-anchored (not corner-anchored): fades in over
+           the first 15% of the width and out over the last 15%, entirely
+           inside the visible 0-1200 area. Because the fade tracks x position
+           rather than a fixed diagonal, the wave always dims to nothing
+           before it reaches the edge, however it happens to be undulating
+           vertically at that moment — no more hard cutoff at the frame. -->
+      <linearGradient id="flow-gradient-back" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="1200" y2="0">
+        <stop offset="0%" stop-color="var(--accent)" stop-opacity="0" />
+        <stop offset="15%" stop-color="var(--accent)" stop-opacity="0.55" />
+        <stop offset="85%" stop-color="var(--accent)" stop-opacity="0.55" />
+        <stop offset="100%" stop-color="var(--accent)" stop-opacity="0" />
+      </linearGradient>
+      <linearGradient id="flow-gradient-front" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="1200" y2="0">
+        <stop offset="0%" stop-color="var(--accent)" stop-opacity="0" />
+        <stop offset="15%" stop-color="var(--accent)" stop-opacity="0.9" />
+        <stop offset="50%" stop-color="color-mix(in oklch, var(--accent) 55%, white)" stop-opacity="1" />
+        <stop offset="85%" stop-color="var(--accent)" stop-opacity="0.9" />
+        <stop offset="100%" stop-color="var(--accent)" stop-opacity="0" />
+      </linearGradient>
+      <filter id="flow-blur-back" x="-50%" y="-50%" width="200%" height="200%">
+        <feGaussianBlur stdDeviation="14" />
+      </filter>
+      <filter id="flow-blur-front" x="-50%" y="-50%" width="200%" height="200%">
+        <feGaussianBlur stdDeviation="8" />
+      </filter>
+    </defs>
+    <g>
+      <path class="flow-wave flow-wave-back-glow" data-layer="back" fill="none" stroke="url(#flow-gradient-back)" stroke-width="46" stroke-linecap="round" filter="url(#flow-blur-back)" />
+      <path class="flow-wave flow-wave-back" data-layer="back" fill="none" stroke="url(#flow-gradient-back)" stroke-width="18" stroke-linecap="round" />
+      <path class="flow-wave flow-wave-front-glow" data-layer="front" fill="none" stroke="url(#flow-gradient-front)" stroke-width="20" stroke-linecap="round" filter="url(#flow-blur-front)" />
+      <path class="flow-wave flow-wave-front" data-layer="front" fill="none" stroke="url(#flow-gradient-front)" stroke-width="3.5" stroke-linecap="round" />
+    </g>
+  </svg>
   <div class="relative mx-auto max-w-content px-4 py-20 sm:px-6 sm:py-28">
     <p class="font-mono text-lg font-semibold uppercase tracking-wide text-accent sm:text-xl">
       {profile.role}
@@ -17,66 +57,94 @@ import { profile } from '@/data/profile';
     </p>
     <div class="mt-8 flex flex-wrap gap-3">
       <Button href="/projects">View projects</Button>
-      <Button href={profile.resumeUrl} variant="secondary">Resume</Button>
+      <Button href={profile.resumeUrl} variant="secondary" external>Resume</Button>
       <Button href="/contact" variant="secondary">Contact</Button>
     </div>
   </div>
 </section>
 
 <style>
-  /* Soft, slowly drifting blobs of the site's accent color behind the hero
-     copy — evokes the PS3/4/5 "flow" backgrounds without a canvas/WebGL
-     dependency. Masked to fade at the edges so it reads as a glow, not a
-     hard-edged panel; prefers-reduced-motion is handled globally in
-     global.css (it clamps all animation-duration to ~0). */
-  .gradient-flow {
+  .flow-ribbon {
     z-index: 0;
-    filter: blur(70px) saturate(130%);
-    opacity: 0.5;
-    background-repeat: no-repeat;
-    background-image:
-      radial-gradient(closest-side, var(--accent) 0%, transparent 100%),
-      radial-gradient(
-        closest-side,
-        color-mix(in oklch, var(--accent) 70%, var(--canvas-subtle)) 0%,
-        transparent 100%
-      ),
-      radial-gradient(
-        closest-side,
-        color-mix(in oklch, var(--accent) 45%, transparent) 0%,
-        transparent 100%
-      );
-    background-size:
-      45% 60%,
-      35% 45%,
-      40% 50%;
-    background-position:
-      10% 20%,
-      85% 15%,
-      55% 85%;
-    -webkit-mask-image: radial-gradient(ellipse at center, black 45%, transparent 78%);
-    mask-image: radial-gradient(ellipse at center, black 45%, transparent 78%);
-    animation: gradient-flow 24s ease-in-out infinite alternate;
-  }
-
-  @keyframes gradient-flow {
-    0% {
-      background-position:
-        10% 20%,
-        85% 15%,
-        55% 85%;
-    }
-    50% {
-      background-position:
-        60% 65%,
-        20% 75%,
-        85% 25%;
-    }
-    100% {
-      background-position:
-        30% 80%,
-        70% 25%,
-        20% 55%;
-    }
   }
 </style>
+
+<script is:inline>
+  (function () {
+    // Two glowing bands whose *shape* undulates like a travelling sine wave —
+    // not just a static curve with a highlight sliding along it — closer to
+    // the PS4 startup "flow" look. Each frame resamples the curve at a few
+    // points and threads a smooth quadratic path through them, then nudges
+    // the phase forward so the wave appears to flow sideways.
+    const svg = document.getElementById('hero-flow');
+    if (!svg) return;
+
+    const WIDTH = 1200;
+    const POINTS = 18;
+
+    const layers = [
+      {
+        selector: '[data-layer="back"]',
+        amplitude: 55,
+        wavelength: 620,
+        yBase: 330,
+        speed: 0.35,
+        phase: 0,
+      },
+      {
+        selector: '[data-layer="front"]',
+        amplitude: 34,
+        wavelength: 420,
+        yBase: 250,
+        speed: -0.55,
+        phase: 2,
+      },
+    ];
+
+    layers.forEach((layer) => {
+      layer.els = svg.querySelectorAll(layer.selector);
+    });
+
+    function wavePath(amplitude, wavelength, phase, yBase) {
+      const step = (WIDTH + 200) / (POINTS - 1);
+      const pts = [];
+      for (let i = 0; i < POINTS; i++) {
+        const x = -100 + i * step;
+        const y = yBase + amplitude * Math.sin((2 * Math.PI * x) / wavelength + phase);
+        pts.push([x, y]);
+      }
+      let d = `M ${pts[0][0]} ${pts[0][1]}`;
+      for (let i = 1; i < pts.length - 1; i++) {
+        const [cx, cy] = pts[i];
+        const [nx, ny] = pts[i + 1];
+        d += ` Q ${cx} ${cy} ${(cx + nx) / 2} ${(cy + ny) / 2}`;
+      }
+      const last = pts[pts.length - 1];
+      d += ` L ${last[0]} ${last[1]}`;
+      return d;
+    }
+
+    function render() {
+      layers.forEach((layer) => {
+        const d = wavePath(layer.amplitude, layer.wavelength, layer.phase, layer.yBase);
+        layer.els.forEach((el) => el.setAttribute('d', d));
+      });
+    }
+
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    render();
+    if (reduceMotion) return;
+
+    let last = performance.now();
+    function tick(now) {
+      const dt = (now - last) / 1000;
+      last = now;
+      layers.forEach((layer) => {
+        layer.phase += layer.speed * dt;
+      });
+      render();
+      requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+  })();
+</script>

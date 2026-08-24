@@ -22,8 +22,9 @@ import { education, currentActivity } from '@/data/experience';
         something that&rsquo;s actually understandable.
       </p>
       <p>
-        Currently {profile.currentlyBuilding}, working through LeetCode
-        problems, and looking to expand both technical depth and network. Off the keyboard: {profile.interests.join(
+        Currently {profile.currentlyBuilding}, reading Clean Architecture: A Craftsman&rsquo;s
+        Guide to Software Structure and Design, and looking to expand both technical depth and
+        network. Off the keyboard: {profile.interests.join(
           ', ',
         )}.
       </p>
@@ -59,12 +60,12 @@ import { education, currentActivity } from '@/data/experience';
     <div class="mt-12">
       <h2 class="text-lg font-semibold text-ink">Stack</h2>
       <div class="mt-4 flex flex-wrap gap-2">
-        {skills.flatMap((group) => group.items).map((item) => <Tag>{item}</Tag>)}
+        {skills.flatMap((group) => group.items).map((item) => <Tag>{item.name}</Tag>)}
       </div>
     </div>
 
     <div class="mt-12 flex flex-wrap gap-3">
-      <Button href={profile.resumeUrl}>Download résumé</Button>
+      <Button href={profile.resumeUrl} external>Download résumé</Button>
       <Button href="/contact" variant="secondary">Get in touch</Button>
     </div>
   </div>

@@ -14,7 +14,7 @@ export const profile = {
   email: 'thiagobuenogarcia1@gmail.com' as string | null,
   resumeUrl: '/resume/thiago-bueno-garcia-resume.pdf',
   currentlyBuilding: "building a website for my father's company",
-  interests: ['soccer', 'volleyball', 'ukulele'],
+  interests: ['soccer', 'volleyball', 'ukulele', 'World of Warcraft'],
   bioQuote: 'One thing remains the same, the architecture to build scalable clean code.',
 } as const;
 

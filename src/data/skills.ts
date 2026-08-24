@@ -1,27 +1,101 @@
+export type RelatedProject = {
+  title: string;
+  href: string;
+  external?: boolean;
+};
+
+export type SkillItem = {
+  name: string;
+  /** Real projects that use this skill. Omitted where none are honestly verified. */
+  projects?: RelatedProject[];
+};
+
 export type SkillCategory = {
   category: string;
-  items: string[];
+  items: SkillItem[];
+};
+
+const portugueseLearning: RelatedProject = { title: 'Portuguese Learning', href: '/projects/portuguese-learning' };
+const falarMobile: RelatedProject = { title: 'Falar (Mobile)', href: '/projects/falar-portuguese-mobile' };
+const falarBackend: RelatedProject = { title: 'Falar Backend', href: '/projects/falar-portuguese-mobile-backend' };
+const verseMeTerminal: RelatedProject = { title: 'Verse Me Terminal', href: '/projects/verse-me-terminal' };
+const movieApp: RelatedProject = { title: 'Movie App', href: '/projects/movie-app' };
+
+const bookbot: RelatedProject = {
+  title: 'bookbot',
+  href: 'https://github.com/thiagobgarc/bookbot',
+  external: true,
+};
+const qrCode: RelatedProject = { title: 'QR_Code', href: 'https://github.com/thiagobgarc/QR_Code', external: true };
+const shop: RelatedProject = { title: 'Shop', href: 'https://github.com/thiagobgarc/Shop', external: true };
+const roomieFinderzBackend: RelatedProject = {
+  title: 'RoomieFinderz-backend',
+  href: 'https://github.com/thiagobgarc/RoomieFinderz-backend',
+  external: true,
+};
+const frontendPracticeAbstract: RelatedProject = {
+  title: 'Frontend-Practice-Abstract-level1',
+  href: 'https://github.com/thiagobgarc/Frontend-Practice-Abstract-level1',
+  external: true,
+};
+const newPortfolio: RelatedProject = {
+  title: 'new_portfolio',
+  href: 'https://github.com/thiagobgarc/new_portfolio',
+  external: true,
+};
+const portugueseLanguageApp: RelatedProject = {
+  title: 'portuguese_language_app',
+  href: 'https://github.com/thiagobgarc/portuguese_language_app',
+  external: true,
+};
+const yadaFpBackend: RelatedProject = {
+  title: 'YadaFp-backend',
+  href: 'https://github.com/thiagobgarc/YadaFp-backend',
+  external: true,
+};
+const portfolioBackend: RelatedProject = {
+  title: 'portfolio-backend',
+  href: 'https://github.com/thiagobgarc/portfolio-backend',
+  external: true,
 };
 
 export const skills: SkillCategory[] = [
   {
     category: 'Languages',
-    items: ['TypeScript', 'JavaScript', 'Python', 'Dart'],
+    items: [
+      { name: 'TypeScript', projects: [portugueseLearning, falarBackend, movieApp] },
+      { name: 'JavaScript', projects: [shop, roomieFinderzBackend, frontendPracticeAbstract] },
+      { name: 'Python', projects: [verseMeTerminal, bookbot, qrCode] },
+      { name: 'Dart', projects: [falarMobile, portugueseLanguageApp] },
+    ],
   },
   {
     category: 'Frontend',
-    items: ['React', 'Next.js', 'Flutter', 'Tailwind CSS'],
+    items: [
+      { name: 'React', projects: [portugueseLearning, frontendPracticeAbstract] },
+      { name: 'Next.js', projects: [newPortfolio] },
+      { name: 'Flutter', projects: [falarMobile, portugueseLanguageApp] },
+      { name: 'Tailwind CSS', projects: [movieApp, newPortfolio] },
+    ],
   },
   {
     category: 'Backend',
-    items: ['Node.js', 'FastAPI', 'Django', 'GraphQL'],
+    items: [
+      { name: 'Node.js', projects: [falarBackend, shop, roomieFinderzBackend] },
+      { name: 'Django', projects: [yadaFpBackend, portfolioBackend] },
+      { name: 'GraphQL', projects: [portugueseLearning, falarMobile, falarBackend] },
+    ],
   },
   {
     category: 'Data & Infra',
-    items: ['SQLite', 'Firebase', 'Docker', 'Git / GitLab'],
+    items: [
+      { name: 'SQLite', projects: [yadaFpBackend] },
+      { name: 'Docker', projects: [portugueseLearning] },
+      { name: 'Git / GitLab', projects: [portugueseLearning, movieApp] },
+    ],
   },
   {
     category: 'Tooling',
-    items: ['Bash', 'Linux', 'VS Code'],
+    items: [{ name: 'Bash' }, { name: 'Linux' }, { name: 'VS Code' }],
   },
 ];

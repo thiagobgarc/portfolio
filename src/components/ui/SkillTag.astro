@@ -1,0 +1,82 @@
+---
+import type { RelatedProject } from '@/data/skills';
+
+interface Props {
+  name: string;
+  projects?: RelatedProject[] | undefined;
+}
+
+const { name, projects = [] } = Astro.props;
+const hasProjects = projects.length > 0;
+---
+
+<span class="skill-tag-wrap relative inline-block">
+  <span
+    class="skill-tag inline-flex items-center rounded-full border border-border px-2.5 py-0.5 font-mono text-xs text-ink-muted"
+  >
+    {name}
+  </span>
+  {
+    hasProjects && (
+      <div class="skill-popover pointer-events-none absolute left-1/2 top-full z-10 mt-2 w-56 rounded-md border border-border bg-canvas p-3 text-left opacity-0 shadow-lg">
+        <p class="text-[11px] font-semibold uppercase tracking-wide text-ink-muted">Used in</p>
+        <ul class="mt-1.5 space-y-1">
+          {projects.map((project) => (
+            <li>
+              <a
+                href={project.href}
+                class="text-xs text-ink hover:text-accent"
+                {...project.external ? { target: '_blank', rel: 'noopener noreferrer' } : {}}
+              >
+                {project.title}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    )
+  }
+</span>
+
+<style>
+  .skill-tag {
+    transition:
+      transform 200ms ease-out,
+      box-shadow 200ms ease-out,
+      background-color 200ms ease-out,
+      color 200ms ease-out,
+      border-color 200ms ease-out;
+  }
+
+  .skill-popover {
+    transform: translateX(-50%);
+    transition: opacity 150ms ease-out;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .skill-tag-wrap:hover .skill-tag {
+      border-color: var(--accent);
+      background-color: color-mix(in oklch, var(--accent) 16%, transparent);
+      color: var(--ink);
+      box-shadow: 0 8px 16px -8px color-mix(in oklch, var(--accent) 30%, transparent);
+      transform: translateY(-1px);
+    }
+
+    .skill-tag-wrap:hover .skill-popover {
+      opacity: 1;
+      pointer-events: auto;
+    }
+  }
+
+  .skill-tag-wrap:focus-within .skill-popover {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .skill-tag,
+    .skill-popover {
+      transition: none;
+    }
+  }
+</style>
