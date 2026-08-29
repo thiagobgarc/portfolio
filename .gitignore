@@ -6,6 +6,10 @@ dist/
 # dependencies
 node_modules/
 
+# this project uses npm; ignore stray lockfiles from other package managers
+bun.lock
+bun.lockb
+
 # logs
 npm-debug.log*
 yarn-debug.log*
