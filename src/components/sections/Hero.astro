@@ -4,6 +4,8 @@ import { profile } from '@/data/profile';
 ---
 
 <section class="relative overflow-hidden">
+  <canvas id="hero-matrix-rain" class="matrix-rain pointer-events-none absolute inset-0 h-full w-full" aria-hidden="true"
+  ></canvas>
   <svg
     id="hero-flow"
     class="flow-ribbon pointer-events-none absolute inset-0 h-full w-full"
@@ -124,6 +126,11 @@ import { profile } from '@/data/profile';
 </section>
 
 <style>
+  .matrix-rain {
+    z-index: 0;
+    opacity: 0.3;
+  }
+
   .flow-ribbon {
     z-index: 0;
   }
@@ -241,5 +248,75 @@ import { profile } from '@/data/profile';
       requestAnimationFrame(tick);
     }
     requestAnimationFrame(tick);
+  })();
+</script>
+
+<script is:inline>
+  (function () {
+    // Digital-rain backdrop behind the wave/diamond graphic. Colors are read
+    // from the theme's CSS custom properties (not hardcoded) so it follows
+    // light/dark and the site accent automatically.
+    const canvas = document.getElementById('hero-matrix-rain');
+    if (!canvas) return;
+
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    const FONT_SIZE = 16;
+    const SPEED_MS = 60;
+    const CHARS =
+      'ｦｧｨｩｪｫｬｭｮｯｰｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉﾊﾋﾌﾍﾎﾏﾐﾑﾒﾓﾔﾕﾖﾗﾘﾙﾚﾛﾜﾝ0123456789';
+
+    let drops = [];
+
+    function themeColor(name) {
+      return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+    }
+
+    function resize() {
+      canvas.width = canvas.offsetWidth;
+      canvas.height = canvas.offsetHeight;
+      const columns = Math.max(1, Math.floor(canvas.width / FONT_SIZE));
+      // Stagger starting positions above the frame so drops don't all begin
+      // in sync on load.
+      drops = new Array(columns).fill(0).map(() => Math.floor(Math.random() * -20));
+      ctx.fillStyle = themeColor('--canvas');
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+    }
+
+    function draw() {
+      // Translucent overlay in the canvas background color fades old
+      // glyphs into the backdrop, leaving a trailing streak.
+      ctx.globalAlpha = 0.06;
+      ctx.fillStyle = themeColor('--canvas');
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.globalAlpha = 1;
+
+      ctx.font = `${FONT_SIZE}px monospace`;
+      ctx.fillStyle = themeColor('--accent');
+
+      for (let i = 0; i < drops.length; i++) {
+        const y = drops[i] * FONT_SIZE;
+        if (y > 0) {
+          const char = CHARS[Math.floor(Math.random() * CHARS.length)];
+          ctx.fillText(char, i * FONT_SIZE, y);
+        }
+
+        if (y > canvas.height && Math.random() > 0.975) {
+          drops[i] = 0;
+        }
+        drops[i]++;
+      }
+    }
+
+    const resizeObserver = new ResizeObserver(resize);
+    resizeObserver.observe(canvas);
+    resize();
+
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    draw();
+    if (reduceMotion) return;
+
+    setInterval(draw, SPEED_MS);
   })();
 </script>
