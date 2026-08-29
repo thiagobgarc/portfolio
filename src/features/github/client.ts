@@ -1,6 +1,7 @@
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import fallbackRepos from './fallback.json';
 import type { GitHubApiRepo } from './types';
 
 const GITHUB_USERNAME = 'thiagobgarc';
@@ -8,11 +9,14 @@ const API_URL = `https://api.github.com/users/${GITHUB_USERNAME}/repos?per_page=
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const CACHE_PATH = join(__dirname, '../../../.cache/github-repos.json');
-const FALLBACK_PATH = join(__dirname, 'fallback.json');
 const CACHE_TTL_MS = 60 * 60 * 1000;
 
+// Imported as a JSON module (not read from disk at runtime) so its content is
+// inlined into the build output. A path built from import.meta.url would
+// break here: Astro's prerender step bundles this module into
+// dist/.prerender/chunks/, and fallback.json is never copied alongside it.
 function readFallback(): GitHubApiRepo[] {
-  return JSON.parse(readFileSync(FALLBACK_PATH, 'utf-8')) as GitHubApiRepo[];
+  return fallbackRepos as GitHubApiRepo[];
 }
 
 type Cache = { fetchedAt: number; repos: GitHubApiRepo[] };
