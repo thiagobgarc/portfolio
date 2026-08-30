@@ -23,7 +23,7 @@ const falarProjects = allProjects
     <SectionHeading
       eyebrow="Project system"
       title="Falar: one product, three architectures"
-      description="Three repositories, one Brazilian Portuguese learning product, one shared domain model. Presented separately they read as three small projects. Presented together, the point is the architecture, not any single client."
+      description="Three repositories, one Brazilian Portuguese learning app, and one shared idea behind all of them."
       as="h1"
     />
 
@@ -54,25 +54,26 @@ const falarProjects = allProjects
       </p>
     </div>
 
-    <div class="prose prose-neutral mt-12 max-w-none prose-p:text-ink-muted prose-strong:text-ink">
-      <h2>Why one product, three times</h2>
+    <div class="prose prose-neutral mt-12 max-w-none prose-headings:font-semibold prose-headings:text-ink prose-p:text-ink-muted prose-strong:text-ink">
+      <h2>Why build the same product three different ways?</h2>
       <p>
-        The desktop app owns the reference implementation: an event-sourced learning domain that
-        persists every review and mistake rather than overwriting state. That domain model &mdash;
-        what a review session is, how mastery is scored &mdash; is the thing being reused, not the
-        code. The mobile client and the backend service each re-express those same rules under a
-        different set of constraints: a backend that exposes them over GraphQL instead of an
-        in-process call, and a mobile client that consumes them the same way any external client
-        would, defaulting to fake data until the real backend is reachable.
+        The desktop app is where the main learning logic lives. It keeps track of every review and
+        mistake instead of just replacing the old data. Things like how a review session works and
+        how mastery is calculated are the core ideas being shared across the project &mdash; not
+        the actual code.
       </p>
       <p>
-        <strong>The architecture is deliberately not identical across the three.</strong> Desktop
-        event-sources because a learning domain's history has real value. The backend persists
-        current state directly and skips event sourcing, because a GraphQL API answering "what is
-        true right now" doesn't need a replayable log. Same author, same instinct toward
-        separated layers, calibrated to what each piece actually needs &mdash; not reused
-        wholesale because it worked once.
+        The mobile app and backend follow those same ideas but are built differently for what they
+        need. The backend uses GraphQL, while the mobile app works like any other client and
+        starts with fake data until the real backend is available.
       </p>
+      <p>
+        <strong>The architecture isn't exactly the same across all three, and that's
+        intentional.</strong> The desktop app uses event sourcing because keeping the history of a
+        learner's progress is useful. The backend just stores the current state because it mainly
+        needs to answer what's true right now.
+      </p>
+      <p>Same core ideas, different implementations &mdash; using the architecture that makes the most sense for each project.</p>
     </div>
 
     <div class="mt-12 space-y-6">

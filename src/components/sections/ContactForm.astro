@@ -4,7 +4,12 @@ import { profile } from '@/data/profile';
 
 {
   profile.email ? (
-    <form id="contact-form" data-target-email={profile.email} class="space-y-5" novalidate>
+    <form
+      id="contact-form"
+      data-form-target={profile.contactFormHash ?? profile.email}
+      class="space-y-5"
+      novalidate
+    >
       <div class="grid gap-5 sm:grid-cols-2">
         <div>
           <label for="contact-name" class="text-sm font-medium text-ink">
@@ -96,7 +101,7 @@ import { profile } from '@/data/profile';
   const form = document.getElementById('contact-form') as HTMLFormElement | null;
 
   if (form) {
-    const targetEmail = form.dataset.targetEmail ?? '';
+    const formTarget = form.dataset.formTarget ?? '';
     const submitButton = document.getElementById('contact-submit') as HTMLButtonElement | null;
     const status = document.getElementById('contact-status');
     const errorFields = ['name', 'email', 'message'] as const;
@@ -134,7 +139,7 @@ import { profile } from '@/data/profile';
       if (submitButton) submitButton.disabled = true;
       if (status) status.textContent = 'Sending…';
 
-      fetch(`https://formsubmit.co/ajax/${encodeURIComponent(targetEmail)}`, {
+      fetch(`https://formsubmit.co/ajax/${encodeURIComponent(formTarget)}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
         body: JSON.stringify({
@@ -153,7 +158,8 @@ import { profile } from '@/data/profile';
         })
         .catch(() => {
           if (status) {
-            status.textContent = `Something went wrong sending that. Please email me directly at ${targetEmail} instead.`;
+            status.textContent =
+              'Something went wrong sending that. Please try again in a moment, or reach out via the links below.';
           }
         })
         .finally(() => {

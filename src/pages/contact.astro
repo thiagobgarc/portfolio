@@ -1,7 +1,6 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import SectionHeading from '@/components/ui/SectionHeading.astro';
-import CopyEmail from '@/components/ui/CopyEmail.astro';
 import ExternalLink from '@/components/ui/ExternalLink.astro';
 import Button from '@/components/ui/Button.astro';
 import ContactForm from '@/components/sections/ContactForm.astro';
@@ -13,22 +12,6 @@ import { profile, socialLinks } from '@/data/profile';
     <SectionHeading eyebrow="Contact" title="Get in touch" as="h1" />
 
     <div class="mt-10 space-y-8">
-      <div>
-        <h2 class="text-sm font-semibold uppercase tracking-wide text-ink-muted">Email</h2>
-        <div class="mt-2">
-          {
-            profile.email ? (
-              <CopyEmail email={profile.email} />
-            ) : (
-              <p class="text-ink-muted">
-                Email pending &mdash; add a real address in{' '}
-                <code class="font-mono text-sm">src/data/profile.ts</code> to enable this section.
-              </p>
-            )
-          }
-        </div>
-      </div>
-
       <div>
         <h2 class="text-sm font-semibold uppercase tracking-wide text-ink-muted">
           Send a message
