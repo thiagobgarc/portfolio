@@ -13,9 +13,9 @@ const jsonLd = personJsonLd(Astro.site?.toString() ?? Astro.url.origin);
 
 <BaseLayout jsonLd={jsonLd}>
   <Hero />
+  <AboutPreview />
   <FeaturedProjects />
   <SkillsMatrix />
-  <AboutPreview />
   <RepoGrid />
   <ContactSection />
 </BaseLayout>
