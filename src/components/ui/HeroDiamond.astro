@@ -1,12 +1,14 @@
 ---
-// Low-poly gem outline: a real 3D mesh (table, girdle, culet) re-projected
-// every frame — genuinely rotating, not a flat static path — drawn as
-// strokes only (no fill), rolled onto a dynamic diagonal like a tumbling
-// cut stone. Color always comes from `var(--accent)`.
+// Low-poly gem: a real 3D mesh (table, girdle, culet) re-projected every
+// frame — genuinely rotating, not a flat static path — drawn as solid,
+// per-facet-shaded polygons with stroked edges on top, rolled onto a
+// dynamic diagonal like a tumbling cut stone. Color always comes from
+// `var(--accent)`.
 ---
 
 <div class="hero-diamond" aria-hidden="true">
   <svg id="hero-diamond-svg" viewBox="0 0 300 300" class="hero-diamond-svg">
+    <g id="hero-diamond-facets"></g>
     <g id="hero-diamond-lines"></g>
     {
       [
@@ -46,6 +48,9 @@
     width: 100%;
     height: auto;
     overflow: visible;
+    /* Grounds the gem with a soft cast shadow — a flat-illustration depth
+       cue, standing in for the ambient occlusion a real render would have. */
+    filter: drop-shadow(0 14px 18px color-mix(in oklab, var(--accent) 45%, transparent));
   }
 
   @media (min-width: 640px) {
@@ -90,8 +95,9 @@
 
 <script is:inline>
   (function () {
+    const facetGroup = document.getElementById('hero-diamond-facets');
     const lineGroup = document.getElementById('hero-diamond-lines');
-    if (!lineGroup) return;
+    if (!facetGroup || !lineGroup) return;
 
     // Classic brilliant-cut silhouette: a small table on top, a wide girdle,
     // and a single point at the bottom — table-to-girdle is a short "crown",
@@ -129,10 +135,37 @@
     const CENTER_X = 150;
     const CENTER_Y = 150;
     const LIGHT = normalize({ x: 0.4, y: -0.5, z: 0.75 });
+    // Camera looks straight down +z, so the view vector is just "toward the
+    // viewer" — combined with LIGHT via Blinn-Phong for a tight glass glint.
+    const VIEW = { x: 0, y: 0, z: 1 };
+    const SHININESS = 45;
 
     function normalize(v) {
       const len = Math.hypot(v.x, v.y, v.z) || 1;
       return { x: v.x / len, y: v.y / len, z: v.z / len };
+    }
+
+    const HALF = normalize({ x: LIGHT.x + VIEW.x, y: LIGHT.y + VIEW.y, z: LIGHT.z + VIEW.z });
+
+    // Turns a diffuse+specular light value into a hue-preserving CSS color —
+    // mixing toward white/black in oklab (rather than a `brightness()`
+    // filter, which desaturates highlights to grey and crushes shadows to
+    // black) so the gem shades like colored glass, not tinted plastic.
+    function shadeColor(shade) {
+      const AMBIENT = 0.8;
+      if (shade >= AMBIENT) {
+        // Capped well under 100% white so even the brightest glint keeps a
+        // trace of the accent hue instead of blowing out to flat grey.
+        const t = Math.min(1.6, (shade - AMBIENT) / (1.1 - AMBIENT));
+        const pct = Math.min(58, t * 40);
+        return `color-mix(in oklab, white ${pct.toFixed(1)}%, var(--accent))`;
+      }
+      // Shadow facets mix toward deep indigo rather than flat black — a
+      // colored shadow reads as more dimensional than a grey/black one and
+      // keeps the gem feeling like colored glass instead of tinted plastic.
+      const t = Math.min(1, (AMBIENT - shade) / (AMBIENT - 0.5));
+      const pct = t * 62;
+      return `color-mix(in oklab, oklch(18% 0.09 264) ${pct.toFixed(1)}%, var(--accent))`;
     }
 
     function ring(angleJitter, radiusJitter, radiusBase, yBase) {
@@ -184,14 +217,26 @@
     });
     const edges = Array.from(edgeFacetMap.values());
 
+    // fill-opacity < 1 lets facets behind (and the page behind the gem) show
+    // through, like real cut glass rather than a solid plastic shape.
+    const facetEls = facetIndices.map(() => {
+      const el = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+      el.setAttribute('fill', 'var(--accent)');
+      el.setAttribute('fill-opacity', '0.62');
+      el.setAttribute('stroke', 'none');
+      facetGroup.appendChild(el);
+      return el;
+    });
+
     // Presentation attributes are set directly rather than via a `:global()`
     // CSS class — Astro's dev/build pipeline was silently dropping that rule.
     const lineEls = edges.map(() => {
       const el = document.createElementNS('http://www.w3.org/2000/svg', 'path');
       el.setAttribute('fill', 'none');
       el.setAttribute('stroke', 'var(--accent)');
-      el.setAttribute('stroke-width', '3.5');
+      el.setAttribute('stroke-width', '2.25');
       el.setAttribute('stroke-linecap', 'round');
+      el.setAttribute('stroke-opacity', '0');
       lineGroup.appendChild(el);
       return el;
     });
@@ -247,13 +292,45 @@
       const camCenter = toCamera(shapeCenter, theta);
 
       const facetVisible = [];
-      const facetBrightness = [];
-      facetIndices.forEach((indices) => {
+      const facetShade = [];
+      const facetAvgZ = [];
+      facetIndices.forEach((indices, i) => {
         const pts = indices.map((idx) => camVerts[idx]);
         const normal = facetNormal(pts, camCenter);
         facetVisible.push(normal.z > 0.02);
-        const b = Math.max(-1, Math.min(1, normal.x * LIGHT.x + normal.y * LIGHT.y + normal.z * LIGHT.z));
-        facetBrightness.push(0.8 + b * 0.3);
+        const diffuse = Math.max(-1, Math.min(1, normal.x * LIGHT.x + normal.y * LIGHT.y + normal.z * LIGHT.z));
+        const specDot = Math.max(0, normal.x * HALF.x + normal.y * HALF.y + normal.z * HALF.z);
+        const specular = Math.pow(specDot, SHININESS);
+        let shade = 0.8 + diffuse * 0.38 + specular * 0.9;
+        // The table (index 0) gets a small standing gloss on top of the
+        // physical lighting, like light gathering at the very top facet of
+        // a real gem — kept to just that facet so it reads as a highlight,
+        // not a uniformly bright crown.
+        if (i === 0) shade += 0.12;
+        facetShade.push(shade);
+        facetAvgZ.push(pts.reduce((s, p) => s + p.z, 0) / pts.length);
+      });
+
+      // Painter's algorithm: draw far-to-near so nearer facets correctly
+      // cover farther ones where the (slightly jittered, near-convex) mesh
+      // isn't perfectly convex.
+      const visibleOrder = facetIndices
+        .map((_, i) => i)
+        .filter((i) => facetVisible[i])
+        .sort((a, b) => facetAvgZ[a] - facetAvgZ[b]);
+
+      visibleOrder.forEach((i) => {
+        const indices = facetIndices[i];
+        const points = indices.map((idx) => toScreen(camVerts[idx]));
+        const d = `M ${points.map((p) => `${p.x.toFixed(1)} ${p.y.toFixed(1)}`).join(' L ')} Z`;
+        const el = facetEls[i];
+        el.setAttribute('d', d);
+        el.style.opacity = '1';
+        el.style.fill = shadeColor(facetShade[i]);
+        facetGroup.appendChild(el);
+      });
+      facetIndices.forEach((_, i) => {
+        if (!facetVisible[i]) facetEls[i].style.opacity = '0';
       });
 
       edges.forEach((edge, i) => {
@@ -267,11 +344,11 @@
 
         const pa = toScreen(camVerts[edge.a]);
         const pb = toScreen(camVerts[edge.b]);
-        const brightness = Math.max(...visibleFacets.map((f) => facetBrightness[f]));
+        const shade = Math.max(...visibleFacets.map((f) => facetShade[f]));
 
         line.setAttribute('d', `M ${pa.x.toFixed(1)} ${pa.y.toFixed(1)} L ${pb.x.toFixed(1)} ${pb.y.toFixed(1)}`);
         line.style.opacity = '1';
-        line.style.filter = `brightness(${brightness.toFixed(3)})`;
+        line.style.stroke = shadeColor(shade);
       });
     }
 

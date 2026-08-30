@@ -3,39 +3,11 @@
 
 /*
  * Semantic color tokens as plain CSS custom properties (not Tailwind @theme
- * values) so the same utility class (e.g. `bg-canvas`) resolves to a
- * different value under `[data-theme="dark"]` without a `dark:` variant on
- * every element. Respects prefers-color-scheme until a visitor picks
- * explicitly (see ThemeToggle.astro), which then sets data-theme and
- * persists to localStorage.
+ * values) so ordinary utility classes (e.g. `bg-canvas`) resolve without a
+ * `dark:` variant on every element. The site is dark-only — there is no
+ * light theme and no toggle.
  */
 :root {
-  --canvas: oklch(98.5% 0.002 90);
-  --canvas-subtle: oklch(96.3% 0.004 90);
-  --ink: oklch(19% 0.01 260);
-  --ink-muted: oklch(45% 0.015 260);
-  --border: oklch(89% 0.004 90);
-  --accent: oklch(48% 0.09 185);
-  --accent-ink: oklch(99% 0 0);
-  --focus-ring: oklch(48% 0.09 185);
-  --danger: oklch(52% 0.19 25);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme='light']) {
-    --canvas: oklch(17% 0.012 260);
-    --canvas-subtle: oklch(21% 0.014 260);
-    --ink: oklch(96% 0.004 90);
-    --ink-muted: oklch(72% 0.015 260);
-    --border: oklch(30% 0.016 260);
-    --accent: oklch(78% 0.13 185);
-    --accent-ink: oklch(15% 0.02 185);
-    --focus-ring: oklch(78% 0.13 185);
-    --danger: oklch(75% 0.17 25);
-  }
-}
-
-:root[data-theme='dark'] {
   --canvas: oklch(17% 0.012 260);
   --canvas-subtle: oklch(21% 0.014 260);
   --ink: oklch(96% 0.004 90);
@@ -72,12 +44,8 @@
   }
 
   html {
-    color-scheme: light;
-    scroll-behavior: smooth;
-  }
-
-  html:has([data-theme='dark']) {
     color-scheme: dark;
+    scroll-behavior: smooth;
   }
 
   body {

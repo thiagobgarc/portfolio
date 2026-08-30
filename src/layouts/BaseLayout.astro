@@ -29,8 +29,7 @@ const resolvedOgImage = new URL(ogImage ?? '/images/og-default.png', Astro.site)
     <link rel="manifest" href="/site.webmanifest" />
     <link rel="canonical" href={canonicalUrl} />
     <meta name="generator" content={Astro.generator} />
-    <meta name="theme-color" content="#fafaf9" media="(prefers-color-scheme: light)" />
-    <meta name="theme-color" content="#0c1015" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#0c1015" />
 
     <title>{pageTitle(title)}</title>
     <meta name="description" content={description} />
@@ -48,19 +47,6 @@ const resolvedOgImage = new URL(ogImage ?? '/images/og-default.png', Astro.site)
     <meta name="twitter:image" content={resolvedOgImage} />
 
     {jsonLd && <script type="application/ld+json" is:inline set:html={JSON.stringify(jsonLd)} />}
-
-    <script is:inline>
-      (function () {
-        try {
-          const stored = localStorage.getItem('theme');
-          if (stored === 'light' || stored === 'dark') {
-            document.documentElement.setAttribute('data-theme', stored);
-          }
-        } catch {
-          /* localStorage unavailable; falls back to prefers-color-scheme */
-        }
-      })();
-    </script>
   </head>
   <body>
     <a href="#main" class="skip-link">Skip to content</a>

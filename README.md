@@ -93,6 +93,10 @@ Current Lighthouse scores:
 
 I’m not trying to chase a score just for the sake of it. The goal is simply to build a site that loads quickly, works well, and is accessible.
 
+Accessibility groundwork in place: skip link, semantic landmarks, visible focus states,
+keyboard-operable nav/filters, `prefers-reduced-motion` support, and contrast checked against the
+site's (dark-only) palette — confirmed by the accessibility score above, not just asserted.
+
 ## Why Astro?
 
 I like Astro because it lets me keep the site mostly static while still giving me the option to use React or client-side JavaScript when I actually need it.
