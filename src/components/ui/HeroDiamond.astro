@@ -1,0 +1,295 @@
+---
+// Low-poly gem outline: a real 3D mesh (table, girdle, culet) re-projected
+// every frame — genuinely rotating, not a flat static path — drawn as
+// strokes only (no fill), rolled onto a dynamic diagonal like a tumbling
+// cut stone. Color always comes from `var(--accent)`.
+---
+
+<div class="hero-diamond" aria-hidden="true">
+  <svg id="hero-diamond-svg" viewBox="0 0 300 300" class="hero-diamond-svg">
+    <g id="hero-diamond-lines"></g>
+    {
+      [
+        { x: 50, y: 65, size: 16, delay: 0 },
+        { x: 268, y: 95, size: 12, delay: 0.6 },
+        { x: 285, y: 200, size: 18, delay: 1.4 },
+        { x: 35, y: 235, size: 13, delay: 2.1 },
+        { x: 210, y: 45, size: 9, delay: 2.8 },
+      ].map((s) => (
+        <text
+          class="hero-diamond-sparkle"
+          x={s.x}
+          y={s.y}
+          font-size={s.size}
+          fill="var(--accent)"
+          style={`animation-delay: ${s.delay}s`}
+        >
+          ✦
+        </text>
+      ))
+    }
+  </svg>
+</div>
+
+<style>
+  .hero-diamond {
+    position: absolute;
+    top: 8%;
+    right: 5%;
+    width: 9rem;
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  .hero-diamond-svg {
+    display: block;
+    width: 100%;
+    height: auto;
+    overflow: visible;
+  }
+
+  @media (min-width: 640px) {
+    .hero-diamond {
+      width: 13rem;
+      top: 6%;
+      right: 4%;
+    }
+  }
+
+  @media (min-width: 900px) {
+    .hero-diamond {
+      width: 20rem;
+      top: 2%;
+      right: 6%;
+    }
+  }
+
+  .hero-diamond-sparkle {
+    animation: hero-diamond-twinkle 3.4s ease-in-out infinite;
+  }
+
+  @keyframes hero-diamond-twinkle {
+    0%,
+    100% {
+      opacity: 0.15;
+      transform: scale(0.7);
+    }
+    50% {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero-diamond-sparkle {
+      animation: none;
+      opacity: 0.6;
+    }
+  }
+</style>
+
+<script is:inline>
+  (function () {
+    const lineGroup = document.getElementById('hero-diamond-lines');
+    if (!lineGroup) return;
+
+    // Classic brilliant-cut silhouette: a small table on top, a wide girdle,
+    // and a single point at the bottom — table-to-girdle is a short "crown",
+    // girdle-to-point is a long "pavilion", same ratio as a real cut gem.
+    const SIDES = 8;
+    const Y_TABLE = -42;
+    const Y_GIRDLE = 0;
+    const Y_CULET = 145;
+    const R_TABLE = 38;
+    const R_GIRDLE = 112;
+
+    // Fixed seeded jitter (no Math.random) so the cut looks hand-faceted and
+    // asymmetric, while staying identical on every load, generated from a
+    // tiny deterministic LCG.
+    function jitterTable(seed, count, magnitude) {
+      const out = [];
+      let state = seed;
+      for (let i = 0; i < count; i++) {
+        state = (state * 9301 + 49297) % 233280;
+        out.push((state / 233280) * 2 * magnitude - magnitude);
+      }
+      return out;
+    }
+
+    const TABLE_ANGLE_JITTER = jitterTable(11, SIDES, 5);
+    const TABLE_RADIUS_JITTER = jitterTable(19, SIDES, 0.12).map((v) => 1 + v);
+    const GIRDLE_ANGLE_JITTER = jitterTable(29, SIDES, 4);
+    const GIRDLE_RADIUS_JITTER = jitterTable(41, SIDES, 0.08).map((v) => 1 + v);
+
+    const TILT = (-20 * Math.PI) / 180;
+    // Fixed roll in the picture plane so the gem sits on a dynamic diagonal
+    // (like a tumbling stone) instead of standing perfectly upright.
+    const ROLL = (28 * Math.PI) / 180;
+    const PERSPECTIVE = 700;
+    const CENTER_X = 150;
+    const CENTER_Y = 150;
+    const LIGHT = normalize({ x: 0.4, y: -0.5, z: 0.75 });
+
+    function normalize(v) {
+      const len = Math.hypot(v.x, v.y, v.z) || 1;
+      return { x: v.x / len, y: v.y / len, z: v.z / len };
+    }
+
+    function ring(angleJitter, radiusJitter, radiusBase, yBase) {
+      const pts = [];
+      for (let i = 0; i < SIDES; i++) {
+        const angle = ((i * 360) / SIDES + angleJitter[i]) * (Math.PI / 180);
+        const r = radiusBase * radiusJitter[i];
+        pts.push({ x: r * Math.cos(angle), y: yBase, z: r * Math.sin(angle) });
+      }
+      return pts;
+    }
+
+    const table = ring(TABLE_ANGLE_JITTER, TABLE_RADIUS_JITTER, R_TABLE, Y_TABLE);
+    const girdle = ring(GIRDLE_ANGLE_JITTER, GIRDLE_RADIUS_JITTER, R_GIRDLE, Y_GIRDLE);
+    const culet = { x: 0, y: Y_CULET, z: 0 };
+
+    const verts = [...table, ...girdle, culet];
+    const IDX_GIRDLE = SIDES;
+    const IDX_CULET = verts.length - 1;
+
+    const shapeCenter = { x: 0, y: (Y_TABLE + Y_CULET) / 2, z: 0 };
+
+    // Facets are only used to derive occlusion + per-edge shading — nothing
+    // is filled, so their winding order doesn't need to be uniform.
+    const facetIndices = [];
+    facetIndices.push(Array.from({ length: SIDES }, (_, i) => i)); // table
+    for (let i = 0; i < SIDES; i++) {
+      const next = (i + 1) % SIDES;
+      facetIndices.push([i, next, IDX_GIRDLE + next, IDX_GIRDLE + i]); // crown
+    }
+    for (let i = 0; i < SIDES; i++) {
+      const next = (i + 1) % SIDES;
+      facetIndices.push([IDX_GIRDLE + i, IDX_GIRDLE + next, IDX_CULET]); // pavilion
+    }
+
+    // Every edge of this closed mesh borders exactly two facets; dedupe by
+    // vertex-pair so each edge is drawn once and knows which facets shade it.
+    const edgeFacetMap = new Map();
+    facetIndices.forEach((facet, facetIdx) => {
+      for (let i = 0; i < facet.length; i++) {
+        const a = facet[i];
+        const b = facet[(i + 1) % facet.length];
+        const key = a < b ? `${a}-${b}` : `${b}-${a}`;
+        if (!edgeFacetMap.has(key)) {
+          edgeFacetMap.set(key, { a, b, facets: [] });
+        }
+        edgeFacetMap.get(key).facets.push(facetIdx);
+      }
+    });
+    const edges = Array.from(edgeFacetMap.values());
+
+    // Presentation attributes are set directly rather than via a `:global()`
+    // CSS class — Astro's dev/build pipeline was silently dropping that rule.
+    const lineEls = edges.map(() => {
+      const el = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+      el.setAttribute('fill', 'none');
+      el.setAttribute('stroke', 'var(--accent)');
+      el.setAttribute('stroke-width', '3.5');
+      el.setAttribute('stroke-linecap', 'round');
+      lineGroup.appendChild(el);
+      return el;
+    });
+
+    function toCamera(v, theta) {
+      const cosT = Math.cos(theta);
+      const sinT = Math.sin(theta);
+      const x1 = v.x * cosT + v.z * sinT;
+      const z1 = -v.x * sinT + v.z * cosT;
+      const cosP = Math.cos(TILT);
+      const sinP = Math.sin(TILT);
+      return {
+        x: x1,
+        y: v.y * cosP - z1 * sinP,
+        z: v.y * sinP + z1 * cosP,
+      };
+    }
+
+    const cosRoll = Math.cos(ROLL);
+    const sinRoll = Math.sin(ROLL);
+
+    function toScreen(p) {
+      const scale = PERSPECTIVE / (PERSPECTIVE - p.z);
+      const x = p.x * scale;
+      const y = p.y * scale;
+      return {
+        x: CENTER_X + x * cosRoll - y * sinRoll,
+        y: CENTER_Y + x * sinRoll + y * cosRoll,
+      };
+    }
+
+    function facetNormal(pts, center) {
+      const [a, b, c] = pts;
+      const e1 = { x: b.x - a.x, y: b.y - a.y, z: b.z - a.z };
+      const e2 = { x: c.x - a.x, y: c.y - a.y, z: c.z - a.z };
+      const n = normalize({
+        x: e1.y * e2.z - e1.z * e2.y,
+        y: e1.z * e2.x - e1.x * e2.z,
+        z: e1.x * e2.y - e1.y * e2.x,
+      });
+      const centroid = {
+        x: pts.reduce((s, p) => s + p.x, 0) / pts.length,
+        y: pts.reduce((s, p) => s + p.y, 0) / pts.length,
+        z: pts.reduce((s, p) => s + p.z, 0) / pts.length,
+      };
+      const out = { x: centroid.x - center.x, y: centroid.y - center.y, z: centroid.z - center.z };
+      const dot = n.x * out.x + n.y * out.y + n.z * out.z;
+      return dot < 0 ? { x: -n.x, y: -n.y, z: -n.z } : n;
+    }
+
+    function render(theta) {
+      const camVerts = verts.map((v) => toCamera(v, theta));
+      const camCenter = toCamera(shapeCenter, theta);
+
+      const facetVisible = [];
+      const facetBrightness = [];
+      facetIndices.forEach((indices) => {
+        const pts = indices.map((idx) => camVerts[idx]);
+        const normal = facetNormal(pts, camCenter);
+        facetVisible.push(normal.z > 0.02);
+        const b = Math.max(-1, Math.min(1, normal.x * LIGHT.x + normal.y * LIGHT.y + normal.z * LIGHT.z));
+        facetBrightness.push(0.8 + b * 0.3);
+      });
+
+      edges.forEach((edge, i) => {
+        const visibleFacets = edge.facets.filter((f) => facetVisible[f]);
+        const line = lineEls[i];
+
+        if (visibleFacets.length === 0) {
+          line.style.opacity = '0';
+          return;
+        }
+
+        const pa = toScreen(camVerts[edge.a]);
+        const pb = toScreen(camVerts[edge.b]);
+        const brightness = Math.max(...visibleFacets.map((f) => facetBrightness[f]));
+
+        line.setAttribute('d', `M ${pa.x.toFixed(1)} ${pa.y.toFixed(1)} L ${pb.x.toFixed(1)} ${pb.y.toFixed(1)}`);
+        line.style.opacity = '1';
+        line.style.filter = `brightness(${brightness.toFixed(3)})`;
+      });
+    }
+
+    render(0);
+
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    // Continuous, slow turn around the vertical axis — one full revolution
+    // every 48s — at the same fixed lean and roll, never pausing.
+    const REVOLUTION_MS = 48000;
+    let start = null;
+
+    function tick(now) {
+      if (start === null) start = now;
+      const theta = (((now - start) % REVOLUTION_MS) / REVOLUTION_MS) * Math.PI * 2;
+      render(theta);
+      requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+  })();
+</script>
