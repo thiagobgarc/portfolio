@@ -32,9 +32,10 @@ regression, not an edge case.
 ## Architecture rules (see docs/architecture.md for why)
 
 - Astro components by default. React/client hydration only when interactivity genuinely needs it —
-  there is currently none; all interactivity (theme toggle, mobile nav, repo filter,
-  copy-to-clipboard) is vanilla `<script is:inline>`. Don't add a UI framework to do what CSS or
-  ten lines of vanilla JS already does.
+  there is currently none; all interactivity (mobile nav, repo filter, copy-to-clipboard) is
+  vanilla `<script is:inline>`. Don't add a UI framework to do what CSS or ten lines of vanilla JS
+  already does.
+- The site is dark-only. Don't reintroduce a light theme or a theme toggle.
 - Content lives in three places and they don't mix: authored Markdown (`src/content/`), static
   typed data (`src/data/`), live GitHub data (`src/features/github/`, fetched at build time only —
   never from the browser).

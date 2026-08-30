@@ -5,8 +5,8 @@
 This site is almost entirely static content: a hero, project write-ups, a skills list, a repo
 grid refreshed at build time. None of that needs a client-side router, server components, or a
 JS runtime in the browser to render. Astro ships zero JavaScript by default and only hydrates the
-handful of interactive islands that actually need it (theme toggle, mobile nav, repo filter,
-copy-to-clipboard) — all as small vanilla `<script>` tags, not framework runtime. Next.js is the
+handful of interactive islands that actually need it (mobile nav, repo filter, copy-to-clipboard)
+— all as small vanilla `<script>` tags, not framework runtime. Next.js is the
 right tool when an app has real client-side interactivity and routing state; a portfolio does not,
 and reaching for it here would mean shipping a bundler and hydration story this site has no use
 for. Choosing the simpler tool that fits the actual requirement is the same judgment call this
@@ -18,7 +18,7 @@ site's own copy argues for.
 src/
 ├── components/
 │   ├── ui/         Small, reusable, presentation-only (Button, Card, Tag, ...)
-│   ├── layout/      Header, Footer, nav, theme toggle — one per page, not reused within a page
+│   ├── layout/      Header, Footer, nav — one per page, not reused within a page
 │   └── sections/    Homepage/page sections composed from ui/ components + data
 ├── layouts/         BaseLayout (every page), ProjectLayout (case studies)
 ├── pages/           File-based routes
@@ -92,12 +92,9 @@ wired up yet — `src/features/contact/validation.ts` is ready for whichever is 
 
 Tailwind v4, configured entirely in CSS (`src/styles/global.css`) via `@theme` — no
 `tailwind.config.js`. Semantic color tokens (`--canvas`, `--ink`, `--accent`, etc.) are plain CSS
-custom properties, redefined under `prefers-color-scheme: dark` and again under
-`[data-theme="dark"]`/`[data-theme="light"]`, then mapped into Tailwind's theme so ordinary
-utilities (`bg-canvas`, `text-ink`, `bg-accent`) resolve to the right value in both themes without
-a `dark:` variant on every element. An inline, render-blocking script in `BaseLayout.astro` applies
-a stored explicit choice before first paint, so there's no flash of the wrong theme;
-`ThemeToggle.astro` writes that choice to `localStorage`.
+custom properties on `:root`, mapped into Tailwind's theme so ordinary utilities (`bg-canvas`,
+`text-ink`, `bg-accent`) resolve without a `dark:` variant on every element. The site is dark-only —
+there is no light theme and no toggle.
 
 **Fonts**: the system font stack (`ui-sans-serif, system-ui, ...` / `ui-monospace, ...`), not a
 self-hosted webfont. This ships zero font bytes, has zero FOIT/FOUT risk, and matches the reader's
@@ -135,7 +132,7 @@ configure the weekly rebuild mentioned above so the GitHub-sourced grid stays cu
 
 ## Rules for introducing client-side JavaScript
 
-Client JS is justified only for: mobile nav, theme toggle, repo language filter, and
-copy-to-clipboard for email — the four cases in the original brief. Each is a small `<script
-is:inline>` in the component that needs it, not a shared bundle or a framework island. Before
-adding a fifth case, ask whether it can be CSS-only first.
+Client JS is justified only for: mobile nav, repo language filter, and copy-to-clipboard for email
+— the three remaining cases from the original brief (the site no longer has a theme toggle). Each
+is a small `<script is:inline>` in the component that needs it, not a shared bundle or a framework
+island. Before adding a new case, ask whether it can be CSS-only first.

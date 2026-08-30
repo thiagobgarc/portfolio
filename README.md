@@ -109,5 +109,5 @@ network latency, but they do confirm nothing in the page itself (JS weight, unsi
 metadata, contrast, unlabeled controls) is leaving points on the table.
 
 Accessibility groundwork in place: skip link, semantic landmarks, visible focus states,
-keyboard-operable nav/filters/theme-toggle, `prefers-reduced-motion` support, and both themes
-checked for contrast — confirmed by the accessibility score above, not just asserted.
+keyboard-operable nav/filters, `prefers-reduced-motion` support, and contrast checked against the
+site's (dark-only) palette — confirmed by the accessibility score above, not just asserted.
