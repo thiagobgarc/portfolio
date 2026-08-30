@@ -79,8 +79,6 @@ The following are placeholders on purpose — this site does not fabricate facts
 finish the site:
 
 - **Location / work authorization**, if you want either published.
-- **Real favicon/brand mark** — currently the default Astro favicon
-  (`public/favicon.svg`, `public/favicon.ico`).
 - **Project screenshots** for the five case studies (`src/content/projects/*.md`), where each
   project has a UI worth showing.
 - **Production domain** — `astro.config.mjs` (`site:`) and `public/robots.txt` currently point at
