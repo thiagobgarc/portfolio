@@ -20,22 +20,23 @@ const FACETS = [
   { points: '84,22 116,48 64,118', fill: '#2dd4bf' },
 ];
 
-function renderIconSvg(size) {
+function renderIconSvg(size, { background = true } = {}) {
   // Mark is drawn in a 128x128 box; scale + center it with headroom so it
   // isn't flush against the icon edge (mirrors standard app-icon padding).
   const scale = (size / 128) * 0.62;
   const offset = (size - 128 * scale) / 2;
   const facets = FACETS.map((f) => `<polygon points="${f.points}" fill="${f.fill}"/>`).join('');
+  const bg = background ? `<rect width="${size}" height="${size}" fill="${CANVAS}"/>` : '';
   return `<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" xmlns="http://www.w3.org/2000/svg">
-  <rect width="${size}" height="${size}" fill="${CANVAS}"/>
+  ${bg}
   <g transform="translate(${offset} ${offset}) scale(${scale})">
     ${facets}
   </g>
 </svg>`;
 }
 
-async function pngBuffer(size) {
-  return sharp(Buffer.from(renderIconSvg(size))).png().toBuffer();
+async function pngBuffer(size, opts) {
+  return sharp(Buffer.from(renderIconSvg(size, opts))).png().toBuffer();
 }
 
 async function rasterize(size, outPath) {
@@ -47,7 +48,11 @@ async function rasterize(size, outPath) {
 // consumer of .ico files supports.
 async function writeFaviconIco(outPath) {
   const sizes = [16, 32, 48];
-  const pngs = await Promise.all(sizes.map((size) => pngBuffer(size)));
+  // Transparent, like favicon.svg — some browsers fall back to the .ico
+  // instead of the SVG, and it shouldn't show a boxed-in background when
+  // they do. The opaque canvas is only correct for the app/home-screen
+  // icons below, which are expected to be a filled square.
+  const pngs = await Promise.all(sizes.map((size) => pngBuffer(size, { background: false })));
 
   const HEADER_SIZE = 6;
   const DIR_ENTRY_SIZE = 16;
