@@ -2,6 +2,7 @@
 import Header from '@/components/layout/Header.astro';
 import Footer from '@/components/layout/Footer.astro';
 import { pageTitle, SITE_DESCRIPTION } from '@/lib/seo';
+import { profile } from '@/data/profile';
 import '@/styles/global.css';
 
 interface Props {
@@ -24,13 +25,18 @@ const resolvedOgImage = new URL(ogImage ?? '/images/og-default.png', Astro.site)
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="icon" href="/favicon.ico" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
     <link rel="canonical" href={canonicalUrl} />
     <meta name="generator" content={Astro.generator} />
+    <meta name="theme-color" content="#fafaf9" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0c1015" media="(prefers-color-scheme: dark)" />
 
     <title>{pageTitle(title)}</title>
     <meta name="description" content={description} />
 
     <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={profile.name} />
     <meta property="og:title" content={pageTitle(title)} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonicalUrl} />
