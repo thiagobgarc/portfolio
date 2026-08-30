@@ -11,7 +11,17 @@ export const profile = {
   positioning:
     'General Assembly Software Engineering Immersive graduate building full-stack and mobile products with a deliberate focus on architecture.',
   location: null as string | null,
-  email: 'thiagobuenogarcia1@gmail.com' as string | null,
+  email: 'thiagobgsoftware@gmail.com' as string | null,
+  /**
+   * FormSubmit.co activation hash for the contact form, so the real email
+   * address never has to appear in the page source. Get it by submitting
+   * your email once at https://formsubmit.co, confirming the activation
+   * email it sends, then copying the hash from the confirmation link
+   * (https://formsubmit.co/<hash>) into this field. Until it's set, the
+   * contact form falls back to using the raw email address as the
+   * formsubmit.co endpoint.
+   */
+  contactFormHash: null as string | null,
   resumeUrl: '/resume/thiago-bueno-garcia-resume.pdf',
   currentlyBuilding: "building a website for my father's company",
   interests: ['soccer', 'volleyball', 'ukulele', 'World of Warcraft'],
