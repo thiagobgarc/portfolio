@@ -8,7 +8,8 @@
   "scripts": {
     "dev": "astro dev",
     "generate:og": "node scripts/generate-og-images.mjs",
-    "prebuild": "npm run generate:og",
+    "generate:icons": "node scripts/generate-icons.mjs",
+    "prebuild": "npm run generate:og && npm run generate:icons",
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
