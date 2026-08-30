@@ -1,113 +1,104 @@
 # thiagobuenogarcia.com
 
-Personal portfolio site for **Thiago Bueno Garcia**, software engineer and General Assembly
-Software Engineering Immersive graduate. Built with [Astro](https://astro.build), TypeScript
-(strict), and Tailwind CSS v4.
+My personal portfolio site — built to showcase the projects I’ve worked on, the technologies I use, and how I approach software development.
 
-If you're reading this because you found the site through a résumé or LinkedIn: this repo is
-itself part of the portfolio. The site ships almost no client-side JavaScript on purpose — see
-[`docs/architecture.md`](docs/architecture.md) for why, and for the reasoning behind every other
-non-obvious decision in here.
+I built this with **Astro, TypeScript, and Tailwind CSS** because I wanted something fast, simple, and easy to maintain. I also wanted to keep the architecture clean and avoid adding libraries or tools that the site doesn't actually need.
 
-## Stack
+## Tech Stack
 
-- [Astro](https://astro.build) — static-first, ships zero JS by default
-- TypeScript, strict mode (`astro/tsconfigs/strictest`)
-- Tailwind CSS v4 (CSS-native config, no `tailwind.config.js`)
-- Zod-validated content collections for project case studies and writing
-- Vitest for the logic that actually has behavior worth testing (GitHub fetch/transform/curation,
-  contact-form validation)
+* **Astro** — fast, static-first, and minimal JavaScript
+* **TypeScript** — strict typing throughout the project
+* **Tailwind CSS v4** — styling and design tokens
+* **Zod** — validating project content
+* **Vitest** — testing the parts of the site that actually need it
 
-No React, no database, no CMS, no GraphQL on this site itself — none of them solve a problem this
-site has. (One of the projects it links to, `falar-portuguese-mobile-backend`, is a GraphQL
-service; that's a different codebase with different requirements.)
+No React, database, CMS, or GraphQL on the portfolio itself. I wanted to keep the site as simple as possible and only add things when they solve an actual problem.
 
-## Getting started
+## Getting Started
+
+Clone the repo and install the dependencies:
 
 ```bash
 npm install
 npm run dev
 ```
 
-| Command             | What it does                                              |
-| -------------------- | ---------------------------------------------------------- |
-| `npm run dev`         | Local dev server at `localhost:4321`                        |
-| `npm run build`       | Production build to `./dist/`                                |
-| `npm run preview`     | Preview the production build locally                          |
-| `npm run typecheck`   | `astro check` — type-checks `.astro` files too                |
-| `npm run lint`        | ESLint                                                        |
-| `npm run format`      | Prettier (writes)                                            |
-| `npm run test`        | Vitest                                                        |
+The site will be available at `localhost:4321`.
 
-Definition of done for any change: `typecheck`, `lint`, `test`, and `build` all pass. `build` must
-succeed with no network access — see [GitHub integration](#github-integration).
+### Commands
 
-## Project structure
+| Command             | What it does                   |
+| ------------------- | ------------------------------ |
+| `npm run dev`       | Starts the development server  |
+| `npm run build`     | Creates a production build     |
+| `npm run preview`   | Previews the production build  |
+| `npm run typecheck` | Runs Astro's type checker      |
+| `npm run lint`      | Runs ESLint                    |
+| `npm run format`    | Formats the code with Prettier |
+| `npm run test`      | Runs the test suite            |
 
-See [`docs/architecture.md`](docs/architecture.md) for the full breakdown and the reasoning behind
-it. Short version:
+## Project Structure
+
+I wanted the project structure to stay simple and easy to understand.
 
 ```text
 src/
-├── components/{ui,layout,sections}/   Astro components, smallest-reusable to page-section
-├── layouts/                           BaseLayout (every page), ProjectLayout (case studies)
-├── pages/                             Routes
-├── content/                           Authored Markdown: project case studies, writing
-├── data/                              Static typed profile/skills/experience/nav data
-├── features/{github,contact}/         The two places with real logic
-├── lib/                               seo.ts, utils.ts
-└── styles/global.css                  Tailwind v4 entry point + design tokens
+├── components/       # UI, layout, and page sections
+├── layouts/          # Shared page layouts
+├── pages/             # Site routes
+├── content/           # Project case studies and writing
+├── data/              # Profile, skills, experience, and navigation
+├── features/          # GitHub and contact functionality
+├── lib/               # Shared utilities
+└── styles/            # Global styles and design tokens
 ```
 
-## GitHub integration
+## A Little About the Architecture
 
-The "More on GitHub" grid on the projects page is fetched from the GitHub REST API **at build
-time**, filtered to exclude forks, archived repos, empty scaffolds, and the five repos that already
-have a full case study. See [`docs/architecture.md`](docs/architecture.md#github-integration) for
-the exact curation rules and why the build never fails even if GitHub is unreachable.
+One of the things I care about when building projects is **how the code is structured**, not just whether it works.
 
-## Content
+For this site, I wanted to keep things lightweight and scalable without over-engineering it.
 
-- **Case studies**: `src/content/projects/*.md`. Adding one is documented in
-  [`CLAUDE.md`](CLAUDE.md#how-to-add-a-new-project-case-study).
-- **Writing**: `src/content/writing/`, scaffolded (index page, post layout, RSS feed) but empty.
-  Flip `writingEnabled` in `src/data/navigation.ts` once the first post exists.
+Astro handles the majority of the site, so pages ship with little to no JavaScript by default. Interactive features only get client-side code when they actually need it.
 
-## Needed from Thiago
+The GitHub project section is also pulled from the GitHub API at build time, so I can keep my project list up to date without maintaining another database or CMS.
 
-The following are placeholders on purpose — this site does not fabricate facts. Supply these to
-finish the site:
+I wrote more about the decisions behind the architecture in [`docs/architecture.md`](docs/architecture.md).
 
-- **Location / work authorization**, if you want either published.
-- **Real favicon/brand mark** — currently the default Astro favicon
-  (`public/favicon.svg`, `public/favicon.ico`).
-- **Project screenshots** for the five case studies (`src/content/projects/*.md`), where each
-  project has a UI worth showing.
-- **Production domain** — `astro.config.mjs` (`site:`) and `public/robots.txt` currently point at
-  `https://thiagobuenogarcia.com` as a placeholder.
-- **Contact form service**, if you want a form in addition to the direct email link (Formspree,
-  Web3Forms, or a serverless function). `src/features/contact/validation.ts` is written and tested
-  and ready to wire up to whichever you pick — no form is rendered yet because a "Submit" button
-  with nowhere to send data would be worse than the direct-email page that's there now.
-- **Deployment target** (Vercel/Netlify/Cloudflare Pages/etc.) and a scheduled weekly rebuild so
-  the GitHub-sourced grid doesn't go stale — see
-  [`docs/architecture.md`](docs/architecture.md#deployment).
+## GitHub Projects
 
-## Performance & accessibility
+The projects section automatically pulls my public GitHub repositories at build time.
 
-Lighthouse (desktop and mobile presets, local production build via `astro preview`):
+It filters out things like:
+
+* Forks
+* Archived repositories
+* Empty projects
+* Projects that already have a full case study
+
+This lets me keep the portfolio focused while still showing the other things I'm working on.
+
+## Performance
+
+The site is built with performance in mind.
+
+Current Lighthouse scores:
 
 | Category       | Desktop | Mobile |
-| -------------- | :-----: | :----: |
-| Performance    |   100   |  100   |
-| Accessibility  |   100   |  100   |
-| Best Practices |   100   |  100   |
-| SEO            |   100   |  100   |
+| -------------- | ------: | -----: |
+| Performance    |     100 |    100 |
+| Accessibility  |     100 |    100 |
+| Best Practices |     100 |    100 |
+| SEO            |     100 |    100 |
 
-Re-run against the deployed URL once a host is chosen — localhost numbers don't account for real
-network latency, but they do confirm nothing in the page itself (JS weight, unsized images, missing
-metadata, contrast, unlabeled controls) is leaving points on the table.
+I’m not trying to chase a score just for the sake of it. The goal is simply to build a site that loads quickly, works well, and is accessible.
 
-Accessibility groundwork in place: skip link, semantic landmarks, visible focus states,
-keyboard-operable nav/filters/theme-toggle, `prefers-reduced-motion` support, and both themes
-checked for contrast — confirmed by the accessibility score above, not just asserted.
+## Why Astro?
+
+I like Astro because it lets me keep the site mostly static while still giving me the option to use React or client-side JavaScript when I actually need it.
+
+For a portfolio, I don't need a huge frontend stack. I’d rather keep the codebase small, readable, and easy to change.
+
+## License
+
+This project is for my personal portfolio. Feel free to look through the code and use it as inspiration.
