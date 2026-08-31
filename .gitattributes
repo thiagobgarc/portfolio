@@ -1,0 +1,5 @@
+# Normalize line endings to LF in the repository and on checkout, regardless
+# of which OS/git client (Windows Git, WSL, etc.) touches the working tree —
+# without this, the same files can show as fully "modified" in one
+# environment but not the other, purely from CRLF/LF differences.
+* text=auto eol=lf

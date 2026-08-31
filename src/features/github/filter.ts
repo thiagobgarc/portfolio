@@ -9,7 +9,7 @@ export const PINNED_REPO_NAMES = [
   'portuguese-learning',
   'falar-portuguese-mobile',
   'falar-portuguese-mobile-backend',
-  'Verse_ME_Terminal',
+  'WoW-BiS',
   'Movie_app',
 ] as const;
 
@@ -23,6 +23,7 @@ const PINNED_SET = new Set<string>(PINNED_REPO_NAMES);
  */
 export const REPO_DESCRIPTION_OVERRIDES: Record<string, string> = {
   portuguese_cli: 'Terminal app for learning Brazilian Portuguese with flashcards, quizzes, and daily vocabulary drills.',
+  Verse_ME_Terminal: 'A terminal app for looking up Bible verses by reference, mood, or category — built to stay off the browser while coding.',
   practice_GO_API: 'A personal playground for practicing API development in Go.',
   bookbot: "Python script that reports a text file's word count and character frequency.",
   'java-game': 'A coffee shop simulation game in Java — sell drinks to hit a sales target.',

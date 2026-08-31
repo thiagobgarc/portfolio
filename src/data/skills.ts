@@ -18,8 +18,8 @@ export type SkillCategory = {
 const portugueseLearning: RelatedProject = { title: 'Portuguese Learning', href: '/projects/portuguese-learning' };
 const falarMobile: RelatedProject = { title: 'Falar (Mobile)', href: '/projects/falar-portuguese-mobile' };
 const falarBackend: RelatedProject = { title: 'Falar Backend', href: '/projects/falar-portuguese-mobile-backend' };
-const verseMeTerminal: RelatedProject = { title: 'Verse Me Terminal', href: '/projects/verse-me-terminal' };
 const movieApp: RelatedProject = { title: 'Movie App', href: '/projects/movie-app' };
+const mythos: RelatedProject = { title: 'Mythos — WoW Gear Planner', href: '/projects/mythos-wow-bis' };
 
 const bookbot: RelatedProject = {
   title: 'bookbot',
@@ -27,6 +27,11 @@ const bookbot: RelatedProject = {
   external: true,
 };
 const qrCode: RelatedProject = { title: 'QR_Code', href: 'https://github.com/thiagobgarc/QR_Code', external: true };
+const verseMeTerminalRepo: RelatedProject = {
+  title: 'Verse_ME_Terminal',
+  href: 'https://github.com/thiagobgarc/Verse_ME_Terminal',
+  external: true,
+};
 const shop: RelatedProject = { title: 'Shop', href: 'https://github.com/thiagobgarc/Shop', external: true };
 const roomieFinderzBackend: RelatedProject = {
   title: 'RoomieFinderz-backend',
@@ -63,16 +68,16 @@ export const skills: SkillCategory[] = [
   {
     category: 'Languages',
     items: [
-      { name: 'TypeScript', projects: [portugueseLearning, falarBackend, movieApp] },
+      { name: 'TypeScript', projects: [portugueseLearning, falarBackend, movieApp, mythos] },
       { name: 'JavaScript', projects: [shop, roomieFinderzBackend, frontendPracticeAbstract] },
-      { name: 'Python', projects: [verseMeTerminal, bookbot, qrCode] },
+      { name: 'Python', projects: [verseMeTerminalRepo, bookbot, qrCode] },
       { name: 'Dart', projects: [falarMobile, portugueseLanguageApp] },
     ],
   },
   {
     category: 'Frontend',
     items: [
-      { name: 'React', projects: [portugueseLearning, frontendPracticeAbstract] },
+      { name: 'React', projects: [portugueseLearning, frontendPracticeAbstract, mythos] },
       { name: 'Next.js', projects: [newPortfolio] },
       { name: 'Flutter', projects: [falarMobile, portugueseLanguageApp] },
       { name: 'Tailwind CSS', projects: [movieApp, newPortfolio] },
