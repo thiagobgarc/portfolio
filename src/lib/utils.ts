@@ -12,3 +12,13 @@ export function formatMonthYear(date: Date): string {
 export function cx(...classes: Array<string | false | null | undefined>): string {
   return classes.filter(Boolean).join(' ');
 }
+
+export type ProjectStatus = 'complete' | 'in-progress' | 'early-stage' | 'archived';
+
+/** Sentence-case display label for a project's `status`. */
+export const statusLabel: Record<ProjectStatus, string> = {
+  complete: 'Complete',
+  'in-progress': 'In progress',
+  'early-stage': 'Early stage',
+  archived: 'Archived',
+};

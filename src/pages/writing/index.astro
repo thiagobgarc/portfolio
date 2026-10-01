@@ -11,7 +11,7 @@ const posts = (await getCollection('writing')).sort(
 
 <BaseLayout title="Writing" description="Notes on architecture, learning, and building in public.">
   <div class="mx-auto max-w-2xl px-4 py-16 sm:px-6">
-    <SectionHeading eyebrow="Writing" title="Writing" as="h1" />
+    <SectionHeading title="Writing" as="h1" />
 
     {
       posts.length === 0 ? (
@@ -22,7 +22,7 @@ const posts = (await getCollection('writing')).sort(
             <li>
               <a
                 href={`/writing/${post.id}`}
-                class="hover-grow text-lg font-semibold text-ink transition-colors hover:text-accent"
+                class="hover-link text-lg font-semibold text-ink transition-colors hover:text-accent"
               >
                 {post.data.title}
               </a>

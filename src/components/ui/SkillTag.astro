@@ -12,14 +12,14 @@ const hasProjects = projects.length > 0;
 
 <span class="skill-tag-wrap relative inline-block">
   <span
-    class="skill-tag inline-flex items-center rounded-full border border-border px-2.5 py-0.5 font-mono text-xs text-ink-muted"
+    class="skill-tag inline-flex items-center rounded-[2px] bg-canvas-subtle px-2 py-0.5 text-[0.8125rem] text-ink-muted"
   >
     {name}
   </span>
   {
     hasProjects && (
-      <div class="skill-popover pointer-events-none absolute left-1/2 top-full z-10 mt-2 w-56 rounded-md border border-border bg-canvas p-3 text-left opacity-0 shadow-lg">
-        <p class="text-[11px] font-semibold uppercase tracking-wide text-ink-muted">Used in</p>
+      <div class="skill-popover pointer-events-none absolute left-1/2 top-full z-10 mt-2 w-56 rounded-[3px] border border-border bg-canvas p-3 text-left opacity-0 shadow-lg">
+        <p class="text-xs text-ink-muted">Used in</p>
         <ul class="mt-1.5 space-y-1">
           {projects.map((project) => (
             <li>
@@ -41,11 +41,8 @@ const hasProjects = projects.length > 0;
 <style>
   .skill-tag {
     transition:
-      transform 200ms ease-out,
-      box-shadow 200ms ease-out,
-      background-color 200ms ease-out,
-      color 200ms ease-out,
-      border-color 200ms ease-out;
+      background-color 150ms ease-out,
+      color 150ms ease-out;
   }
 
   .skill-popover {
@@ -55,11 +52,8 @@ const hasProjects = projects.length > 0;
 
   @media (hover: hover) and (pointer: fine) {
     .skill-tag-wrap:hover .skill-tag {
-      border-color: var(--accent);
-      background-color: color-mix(in oklch, var(--accent) 16%, transparent);
+      background-color: color-mix(in oklab, var(--accent) 22%, var(--canvas-subtle));
       color: var(--ink);
-      box-shadow: 0 8px 16px -8px color-mix(in oklch, var(--accent) 30%, transparent);
-      transform: translateY(-1px);
     }
 
     .skill-tag-wrap:hover .skill-popover {

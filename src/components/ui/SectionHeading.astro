@@ -1,22 +1,15 @@
 ---
 interface Props {
-  eyebrow?: string;
   title: string;
   description?: string;
   as?: 'h1' | 'h2' | 'h3';
 }
 
-const { eyebrow, title, description, as: Tag = 'h2' }: Props = Astro.props;
+const { title, description, as: Tag = 'h2' }: Props = Astro.props;
+const size = Tag === 'h1' ? 'text-4xl sm:text-5xl' : 'text-[1.75rem] sm:text-4xl';
 ---
 
 <div class="max-w-2xl">
-  {
-    eyebrow && (
-      <p class="mb-2 font-mono text-sm text-accent" aria-hidden="true">
-        {eyebrow}
-      </p>
-    )
-  }
-  <Tag class="text-2xl font-semibold tracking-tight text-ink sm:text-3xl">{title}</Tag>
-  {description && <p class="mt-3 text-base text-ink-muted">{description}</p>}
+  <Tag class:list={['font-semibold leading-[1.1] tracking-[-0.02em] text-ink', size]}>{title}</Tag>
+  {description && <p class="mt-3 text-ink-muted">{description}</p>}
 </div>

@@ -22,7 +22,7 @@ import { profile } from '@/data/profile';
             required
             autocomplete="name"
             aria-describedby="contact-name-error"
-            class="mt-1.5 w-full rounded-md border border-border bg-canvas px-3 py-2 text-sm text-ink focus:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+            class="mt-1.5 w-full rounded-[3px] border border-border bg-canvas px-3 py-2 text-base text-ink focus:outline-none focus-visible:ring-2 focus-visible:ring-accent"
           />
           <p id="contact-name-error" class="mt-1 min-h-4 text-xs text-danger" role="alert" />
         </div>
@@ -37,7 +37,7 @@ import { profile } from '@/data/profile';
             required
             autocomplete="email"
             aria-describedby="contact-email-error"
-            class="mt-1.5 w-full rounded-md border border-border bg-canvas px-3 py-2 text-sm text-ink focus:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+            class="mt-1.5 w-full rounded-[3px] border border-border bg-canvas px-3 py-2 text-base text-ink focus:outline-none focus-visible:ring-2 focus-visible:ring-accent"
           />
           <p id="contact-email-error" class="mt-1 min-h-4 text-xs text-danger" role="alert" />
         </div>
@@ -53,7 +53,7 @@ import { profile } from '@/data/profile';
           rows="5"
           required
           aria-describedby="contact-message-error"
-          class="mt-1.5 w-full rounded-md border border-border bg-canvas px-3 py-2 text-sm text-ink focus:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+          class="mt-1.5 w-full rounded-[3px] border border-border bg-canvas px-3 py-2 text-base text-ink focus:outline-none focus-visible:ring-2 focus-visible:ring-accent"
         />
         <p id="contact-message-error" class="mt-1 min-h-4 text-xs text-danger" role="alert" />
       </div>
@@ -68,7 +68,7 @@ import { profile } from '@/data/profile';
         <button
           type="submit"
           id="contact-submit"
-          class="btn-lift inline-flex items-center gap-2 rounded-md bg-accent px-5 py-2.5 text-sm font-medium text-accent-ink transition-[transform,box-shadow,background-color] duration-200 ease-out hover:-translate-y-0.5 hover:scale-[1.03] active:translate-y-0 active:scale-100 disabled:pointer-events-none disabled:opacity-60"
+          class="inline-flex items-center gap-2 rounded-[3px] bg-accent px-5 py-2.5 text-[0.9375rem] font-semibold text-accent-ink transition-colors duration-150 ease-out hover:bg-[color-mix(in_oklab,var(--accent)_88%,white)] disabled:pointer-events-none disabled:opacity-60"
         >
           Send message
         </button>
@@ -82,18 +82,6 @@ import { profile } from '@/data/profile';
     </p>
   )
 }
-
-<style>
-  .btn-lift:hover {
-    box-shadow: 8px 10px 16px -8px color-mix(in oklch, var(--accent) 22%, transparent);
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .btn-lift:hover {
-      transform: none;
-    }
-  }
-</style>
 
 <script>
   import { validateContactForm } from '@/features/contact/validation';

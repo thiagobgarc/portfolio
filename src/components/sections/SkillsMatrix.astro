@@ -4,25 +4,26 @@ import SkillTag from '@/components/ui/SkillTag.astro';
 import { skills } from '@/data/skills';
 ---
 
-<section class="mx-auto max-w-content px-4 py-16 sm:px-6">
-  <SectionHeading eyebrow="Stack" title="Technical skills" />
+<section class="mx-auto max-w-content px-4 py-16 sm:px-6 sm:py-20">
+  <SectionHeading
+    title="Technical skills"
+    description="Hover or focus a skill to see which projects use it."
+  />
 
-  <div class="mt-10 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+  <dl class="mt-10 max-w-3xl border-b border-border">
     {
       skills.map((group) => (
-        <div>
-          <h3 class="text-sm font-semibold uppercase tracking-wide text-ink-muted">
-            {group.category}
-          </h3>
-          <div class="mt-3 flex flex-wrap gap-2">
+        <div class="grid gap-x-8 gap-y-2 border-t border-border py-4 sm:grid-cols-[10rem_1fr]">
+          <dt class="font-medium text-ink">{group.category}</dt>
+          <dd class="flex flex-wrap gap-1.5">
             {group.items.map((item) => (
               <SkillTag name={item.name} projects={item.projects} />
             ))}
-          </div>
+          </dd>
         </div>
       ))
     }
-  </div>
+  </dl>
 </section>
 
 <script is:inline>

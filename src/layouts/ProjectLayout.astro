@@ -2,12 +2,12 @@
 import BaseLayout from './BaseLayout.astro';
 import Tag from '@/components/ui/Tag.astro';
 import ExternalLink from '@/components/ui/ExternalLink.astro';
-import { cx } from '@/lib/utils';
+import { cx, statusLabel, type ProjectStatus } from '@/lib/utils';
 
 interface Props {
   title: string;
   summary: string;
-  status: 'complete' | 'in-progress' | 'early-stage' | 'archived';
+  status: ProjectStatus;
   role: string;
   stack: string[];
   repoUrl: string;
@@ -18,32 +18,25 @@ interface Props {
 const { title, summary, status, role, stack, repoUrl, liveUrl, ogImage } = Astro.props;
 
 const statusStyles: Record<Props['status'], string> = {
-  complete: 'border-accent/40 text-accent',
-  'in-progress': 'border-accent/40 text-accent',
-  'early-stage': 'border-border text-ink-muted',
-  archived: 'border-border text-ink-muted',
-};
-
-const statusLabel: Record<Props['status'], string> = {
-  complete: 'Complete',
-  'in-progress': 'In progress',
-  'early-stage': 'Early stage',
-  archived: 'Archived',
+  complete: 'bg-accent/15 text-accent',
+  'in-progress': 'bg-accent/15 text-accent',
+  'early-stage': 'bg-canvas-subtle text-ink-muted',
+  archived: 'bg-canvas-subtle text-ink-muted',
 };
 ---
 
 <BaseLayout title={title} description={summary} ogImage={ogImage}>
   <article class="mx-auto max-w-3xl px-4 py-16 sm:px-6">
-    <a href="/projects" class="hover-grow text-sm text-ink-muted transition-colors hover:text-ink"
+    <a href="/projects" class="hover-link text-sm text-ink-muted transition-colors hover:text-ink"
       >&larr; All projects</a
     >
 
     <header class="mt-6">
       <div class="flex flex-wrap items-center gap-3">
-        <h1 class="text-3xl font-semibold tracking-tight text-ink sm:text-4xl">{title}</h1>
+        <h1 class="text-4xl leading-[1.1] font-semibold tracking-[-0.02em] text-ink sm:text-5xl">{title}</h1>
         <span
           class:list={[
-            'rounded-full border px-2.5 py-0.5 font-mono text-xs',
+            'rounded-[2px] px-2 py-0.5 text-[0.8125rem]',
             statusStyles[status],
           ]}
         >
@@ -60,7 +53,7 @@ const statusLabel: Record<Props['status'], string> = {
       <div class="mt-6 flex flex-wrap gap-3">
         <ExternalLink
           href={repoUrl}
-          class="inline-flex items-center gap-2 rounded-md border border-border px-4 py-2 text-sm font-medium text-ink hover:bg-canvas-subtle"
+          class="inline-flex items-center gap-2 rounded-[3px] border border-border px-4 py-2 text-[0.9375rem] font-semibold text-ink transition-colors hover:border-ink-muted hover:bg-canvas-subtle"
         >
           View repository
         </ExternalLink>
@@ -69,7 +62,7 @@ const statusLabel: Record<Props['status'], string> = {
             <ExternalLink
               href={liveUrl}
               class={cx(
-                'inline-flex items-center gap-2 rounded-md px-4 py-2 text-sm font-medium',
+                'inline-flex items-center gap-2 rounded-[3px] px-4 py-2 text-[0.9375rem] font-semibold',
                 'bg-accent text-accent-ink hover:opacity-90',
               )}
             >
@@ -81,7 +74,7 @@ const statusLabel: Record<Props['status'], string> = {
     </header>
 
     <div
-      class="prose prose-neutral mt-12 max-w-none prose-headings:font-semibold prose-headings:tracking-tight prose-headings:text-ink prose-p:text-ink-muted prose-a:text-accent prose-a:no-underline prose-strong:text-ink prose-code:text-ink"
+      class="prose prose-neutral mt-12 max-w-none prose-headings:font-semibold prose-headings:tracking-tight prose-headings:text-ink prose-p:text-ink-muted prose-a:text-accent prose-a:underline-offset-4 prose-strong:text-ink prose-code:text-ink"
     >
       <slot />
     </div>

@@ -64,7 +64,8 @@ regression, not an edge case.
 - The three-content-source separation (section above / `docs/architecture.md`).
 - The GitHub fallback behavior — a build must never fail because `api.github.com` is down.
 - The honesty rules: no fabricated employment, credentials, metrics, or project status.
-- The system font stack — see `docs/architecture.md` for why this isn't a self-hosted webfont.
+- The single self-hosted typeface (Schibsted Grotesk) and the one-motion-moment rule for the hero —
+  see `docs/architecture.md` ("Styling and theming") for why.
 
 ## Known gaps (see README for the current list)
 

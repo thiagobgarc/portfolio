@@ -3,8 +3,8 @@ import SectionHeading from '@/components/ui/SectionHeading.astro';
 import { profile } from '@/data/profile';
 ---
 
-<section class="mx-auto max-w-content px-4 py-16 sm:px-6">
-  <SectionHeading eyebrow="About" title="Building the same product three ways" />
+<section class="mx-auto max-w-content px-4 py-16 sm:px-6 sm:py-20">
+  <SectionHeading title="About me" />
   <div class="mt-6 max-w-2xl space-y-4 text-ink-muted">
     <p>{profile.positioning}</p>
     <p>
@@ -18,7 +18,7 @@ import { profile } from '@/data/profile';
       a keyboard.
     </p>
   </div>
-  <a href="/about" class="hover-grow mt-6 text-sm font-medium text-accent">
-    More about me &rarr;
+  <a href="/about" class="hover-link mt-6 inline-block font-medium text-ink">
+    More about me
   </a>
 </section>

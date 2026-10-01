@@ -10,14 +10,14 @@ import sharp from 'sharp';
 const ROOT = dirname(dirname(fileURLToPath(import.meta.url)));
 const ICONS_DIR = join(ROOT, 'public/icons');
 
-const CANVAS = '#0c1015';
+const CANVAS = '#0f1e36';
 
 // Same three-facet gem as public/favicon.svg: a low-poly diamond split into
 // a shadowed left facet, a bright center facet, and a mid-tone right facet.
 const FACETS = [
-  { points: '44,22 12,48 64,118', fill: '#0d5c53' },
-  { points: '44,22 84,22 64,118', fill: '#a7f3e0' },
-  { points: '84,22 116,48 64,118', fill: '#2dd4bf' },
+  { points: '44,22 12,48 64,118', fill: '#8a6414' },
+  { points: '44,22 84,22 64,118', fill: '#f5d98a' },
+  { points: '84,22 116,48 64,118', fill: '#e8b63e' },
 ];
 
 function renderIconSvg(size, { background = true } = {}) {

@@ -96,11 +96,24 @@ custom properties on `:root`, mapped into Tailwind's theme so ordinary utilities
 `text-ink`, `bg-accent`) resolve without a `dark:` variant on every element. The site is dark-only —
 there is no light theme and no toggle.
 
-**Fonts**: the system font stack (`ui-sans-serif, system-ui, ...` / `ui-monospace, ...`), not a
-self-hosted webfont. This ships zero font bytes, has zero FOIT/FOUT risk, and matches the reader's
-OS. Given the site's own performance argument — ship as little as possible — that beats a subsetted
-webfont that would cost real bytes for a marginal typographic gain. Revisit this only if a specific
-brand typeface becomes a real requirement.
+**Palette**: a blueprint scheme. A cobalt canvas, pale line ink, and one warm accent (ouro,
+`#e8b63e`) reserved for primary actions and the Falar architecture map. The site's argument is
+architecture, and its main project is Brazilian, so the colors come from drawings and from Brazil
+rather than a generic dark theme. `scripts/generate-og-images.mjs`, `scripts/generate-icons.mjs` and
+`public/site.webmanifest` repeat these hex values, so update them together.
+
+**Fonts**: one self-hosted variable face, Schibsted Grotesk, used for everything except code/repo
+identifiers (which stay on the system monospace stack). It comes from
+`@fontsource-variable/schibsted-grotesk`, imported in `global.css` and bundled into the build, so
+the build still needs no network access. The browser fetches only the latin `wght` file (~47 KB
+woff2, `font-display: swap`). An earlier version used the system stack to ship zero font bytes;
+that was reversed on purpose. On a portfolio, typography is the main carrier of identity, and the
+OS default made the site look like every other one. One variable file covers every weight, so using
+it for body text as well as headings costs nothing extra. Don't add a second family.
+
+**Motion**: the homepage hero has exactly one automatic animation, the Falar map drawing itself in
+on load (`FalarMap.astro`, `animate` prop), and it is disabled under `prefers-reduced-motion`. Hover
+states change color or underline only; nothing lifts or scales.
 
 ## SEO
 

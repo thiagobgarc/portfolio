@@ -11,10 +11,10 @@ interface Props {
 const { href, variant = 'primary', external = false, class: className } = Astro.props;
 
 const base =
-  'btn-lift inline-flex items-center gap-2 rounded-md px-5 py-2.5 text-sm font-medium transition-[transform,box-shadow,background-color] duration-200 ease-out hover:-translate-y-0.5 hover:scale-[1.03] active:translate-y-0 active:scale-100';
+  'inline-flex items-center gap-2 rounded-[3px] px-5 py-2.5 text-[0.9375rem] font-semibold transition-colors duration-150 ease-out';
 const variants = {
-  primary: 'bg-accent text-accent-ink',
-  secondary: 'border border-border text-ink hover:bg-canvas-subtle',
+  primary: 'bg-accent text-accent-ink hover:bg-[color-mix(in_oklab,var(--accent)_88%,white)]',
+  secondary: 'border border-border text-ink hover:border-ink-muted hover:bg-canvas-subtle',
 };
 ---
 
@@ -25,15 +25,3 @@ const variants = {
 >
   <slot />
 </a>
-
-<style>
-  .btn-lift:hover {
-    box-shadow: 8px 10px 16px -8px color-mix(in oklch, var(--accent) 22%, transparent);
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .btn-lift:hover {
-      transform: none;
-    }
-  }
-</style>
