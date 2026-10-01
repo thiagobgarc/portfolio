@@ -111,9 +111,14 @@ that was reversed on purpose. On a portfolio, typography is the main carrier of 
 OS default made the site look like every other one. One variable file covers every weight, so using
 it for body text as well as headings costs nothing extra. Don't add a second family.
 
-**Motion**: the homepage hero has exactly one automatic animation, the Falar map drawing itself in
-on load (`FalarMap.astro`, `animate` prop), and it is disabled under `prefers-reduced-motion`. Hover
-states change color or underline only; nothing lifts or scales.
+**Motion**: the homepage hero has two moving pieces, and nothing else on the site animates on its
+own. (1) The gem (`HeroDiamond.astro`): a gold low-poly stone, a nod to Mythos's gear/loot
+subject, that idles with a slow turn and can be dragged or swiped to spin with momentum. It's the
+site's one moment meant to delight, and it pauses when off-screen or when the tab is hidden.
+(2) The Mythos diagram drawing itself in once on load (`MythosMap.astro`, `animate` prop). Under
+`prefers-reduced-motion` the gem stays still unless dragged, and the diagram renders already drawn.
+Don't add more ambient motion next to these. Hover states change color or underline only; nothing
+lifts or scales.
 
 ## SEO
 

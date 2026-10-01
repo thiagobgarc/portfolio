@@ -22,7 +22,7 @@ import { profile } from '@/data/profile';
             required
             autocomplete="name"
             aria-describedby="contact-name-error"
-            class="mt-1.5 w-full rounded-[3px] border border-border bg-canvas px-3 py-2 text-base text-ink focus:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+            class="mt-1.5 w-full rounded-[3px] border border-border-strong bg-canvas aria-invalid:border-danger px-3 py-2 text-base text-ink focus:outline-none focus-visible:ring-2 focus-visible:ring-accent"
           />
           <p id="contact-name-error" class="mt-1 min-h-4 text-xs text-danger" role="alert" />
         </div>
@@ -37,7 +37,7 @@ import { profile } from '@/data/profile';
             required
             autocomplete="email"
             aria-describedby="contact-email-error"
-            class="mt-1.5 w-full rounded-[3px] border border-border bg-canvas px-3 py-2 text-base text-ink focus:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+            class="mt-1.5 w-full rounded-[3px] border border-border-strong bg-canvas aria-invalid:border-danger px-3 py-2 text-base text-ink focus:outline-none focus-visible:ring-2 focus-visible:ring-accent"
           />
           <p id="contact-email-error" class="mt-1 min-h-4 text-xs text-danger" role="alert" />
         </div>
@@ -53,7 +53,7 @@ import { profile } from '@/data/profile';
           rows="5"
           required
           aria-describedby="contact-message-error"
-          class="mt-1.5 w-full rounded-[3px] border border-border bg-canvas px-3 py-2 text-base text-ink focus:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+          class="mt-1.5 w-full rounded-[3px] border border-border-strong bg-canvas aria-invalid:border-danger px-3 py-2 text-base text-ink focus:outline-none focus-visible:ring-2 focus-visible:ring-accent"
         />
         <p id="contact-message-error" class="mt-1 min-h-4 text-xs text-danger" role="alert" />
       </div>
@@ -99,10 +99,20 @@ import { profile } from '@/data/profile';
       message: document.getElementById('contact-message-error'),
     };
 
+    // aria-invalid both announces the error and drives the red border
+    // (`aria-invalid:border-danger`), so color is never the only signal.
+    const setInvalid = (field: (typeof errorFields)[number], invalid: boolean) => {
+      const input = form.elements.namedItem(field);
+      if (!(input instanceof HTMLElement)) return;
+      if (invalid) input.setAttribute('aria-invalid', 'true');
+      else input.removeAttribute('aria-invalid');
+    };
+
     const clearErrors = () => {
       for (const field of errorFields) {
         const el = errorEls[field];
         if (el) el.textContent = '';
+        setInvalid(field, false);
       }
     };
 
@@ -119,6 +129,7 @@ import { profile } from '@/data/profile';
           const el = errorEls[field];
           const message = errors[field];
           if (el && message) el.textContent = message;
+          if (message) setInvalid(field, true);
         }
         if (status) status.textContent = 'Please fix the errors above.';
         return;

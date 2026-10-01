@@ -18,6 +18,9 @@
   --ink: #e6edf6;
   --ink-muted: #94a7c2;
   --border: #2a4166;
+  /* Boundaries a person must see to use a control (inputs, connector lines):
+     3:1+ against both canvas tones, per WCAG 1.4.11. --border is decorative. */
+  --border-strong: #60799c;
   --grid: rgb(148 167 194 / 0.07);
   --accent: #e8b63e;
   --accent-ink: #0f1e36;
@@ -31,6 +34,7 @@
   --color-ink: var(--ink);
   --color-ink-muted: var(--ink-muted);
   --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
   --color-accent: var(--accent);
   --color-accent-ink: var(--accent-ink);
   --color-danger: var(--danger);
@@ -74,6 +78,12 @@
 
   p {
     text-wrap: pretty;
+  }
+
+  /* Tailwind v4's preflight leaves buttons on the default arrow cursor. */
+  button:not(:disabled),
+  [role='button']:not([aria-disabled='true']) {
+    cursor: pointer;
   }
 
   ::selection {

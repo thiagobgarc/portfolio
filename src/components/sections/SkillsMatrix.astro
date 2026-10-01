@@ -7,7 +7,7 @@ import { skills } from '@/data/skills';
 <section class="mx-auto max-w-content px-4 py-16 sm:px-6 sm:py-20">
   <SectionHeading
     title="Technical skills"
-    description="Hover or focus a skill to see which projects use it."
+    description="Select a skill to see which projects use it."
   />
 
   <dl class="mt-10 max-w-3xl border-b border-border">
@@ -48,9 +48,49 @@ import { skills } from '@/data/skills';
       }
     }
 
-    document.querySelectorAll('.skill-tag-wrap').forEach((wrap) => {
+    const wraps = document.querySelectorAll('.skill-tag-wrap');
+
+    function setOpen(wrap, open) {
+      const button = wrap.querySelector('.skill-tag-button');
+      if (!button) return;
+      wrap.classList.toggle('is-open', open);
+      button.setAttribute('aria-expanded', String(open));
+      if (open) clampPopover(wrap);
+    }
+
+    function closeAll(except) {
+      wraps.forEach((wrap) => {
+        if (wrap !== except) setOpen(wrap, false);
+      });
+    }
+
+    wraps.forEach((wrap) => {
       wrap.addEventListener('mouseenter', () => clampPopover(wrap));
       wrap.addEventListener('focusin', () => clampPopover(wrap));
+
+      const button = wrap.querySelector('.skill-tag-button');
+      if (!button) return;
+      // Tap/click/Enter/Space toggles, so the project list is reachable
+      // without a mouse — hover alone never fires on touch screens.
+      button.addEventListener('click', () => {
+        const open = !wrap.classList.contains('is-open');
+        closeAll(wrap);
+        setOpen(wrap, open);
+      });
+    });
+
+    document.addEventListener('click', (event) => {
+      if (!(event.target instanceof Element) || !event.target.closest('.skill-tag-wrap')) {
+        closeAll(null);
+      }
+    });
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key !== 'Escape') return;
+      const open = document.querySelector('.skill-tag-wrap.is-open');
+      if (!open) return;
+      setOpen(open, false);
+      open.querySelector('.skill-tag-button')?.focus();
     });
   })();
 </script>

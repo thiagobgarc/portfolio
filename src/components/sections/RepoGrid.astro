@@ -35,7 +35,7 @@ const languages = [...new Set(repos.map((r) => r.language).filter((l): l is stri
         <button
           type="button"
           data-filter="all"
-          class="repo-filter rounded-[2px] border border-accent bg-accent px-3 py-1 text-[0.8125rem] font-medium text-accent-ink"
+          class="repo-filter min-h-11 sm:min-h-0 rounded-[2px] border border-accent bg-accent px-3 py-1 text-[0.8125rem] font-medium text-accent-ink"
           aria-pressed="true"
         >
           All
@@ -44,7 +44,7 @@ const languages = [...new Set(repos.map((r) => r.language).filter((l): l is stri
           <button
             type="button"
             data-filter={lang}
-            class="repo-filter rounded-[2px] border border-border px-3 py-1 text-[0.8125rem] font-medium text-ink-muted hover:border-ink-muted"
+            class="repo-filter min-h-11 sm:min-h-0 rounded-[2px] border border-border px-3 py-1 text-[0.8125rem] font-medium text-ink-muted hover:border-ink-muted"
             aria-pressed="false"
           >
             {lang}
