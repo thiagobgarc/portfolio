@@ -13,17 +13,17 @@ if (usedFallback && import.meta.env.PROD) {
 const languages = [...new Set(repos.map((r) => r.language).filter((l): l is string => l !== null))].sort();
 ---
 
-<section class="mx-auto max-w-content px-4 py-16 sm:px-6" id="repos">
+<section class="mx-auto max-w-content px-4 py-16 sm:px-6 sm:py-20" id="repos">
   <div class="flex flex-wrap items-end justify-between gap-4">
     <div>
-      <h2 class="text-2xl font-semibold tracking-tight text-ink sm:text-3xl">More on GitHub</h2>
+      <h2 class="text-[1.75rem] leading-[1.1] font-semibold tracking-[-0.02em] text-ink sm:text-4xl">More on GitHub</h2>
       <p class="mt-2 text-ink-muted">
         A collection of projects built across different technologies and platforms.
       </p>
     </div>
     <ExternalLink
       href="https://github.com/thiagobgarc?tab=repositories"
-      class="hover-grow text-sm font-medium text-accent"
+      class="hover-link font-medium text-ink"
     >
       All repositories on GitHub
     </ExternalLink>
@@ -35,7 +35,7 @@ const languages = [...new Set(repos.map((r) => r.language).filter((l): l is stri
         <button
           type="button"
           data-filter="all"
-          class="repo-filter rounded-full border border-accent bg-accent px-3 py-1 text-xs font-medium text-accent-ink"
+          class="repo-filter min-h-11 sm:min-h-0 rounded-[2px] border border-accent bg-accent px-3 py-1 text-[0.8125rem] font-medium text-accent-ink"
           aria-pressed="true"
         >
           All
@@ -44,7 +44,7 @@ const languages = [...new Set(repos.map((r) => r.language).filter((l): l is stri
           <button
             type="button"
             data-filter={lang}
-            class="repo-filter rounded-full border border-border px-3 py-1 text-xs font-medium text-ink-muted hover:border-accent"
+            class="repo-filter min-h-11 sm:min-h-0 rounded-[2px] border border-border px-3 py-1 text-[0.8125rem] font-medium text-ink-muted hover:border-ink-muted"
             aria-pressed="false"
           >
             {lang}
@@ -62,7 +62,7 @@ const languages = [...new Set(repos.map((r) => r.language).filter((l): l is stri
             href={repo.url}
             target="_blank"
             rel="noopener noreferrer"
-            class="card-lift block h-full rounded-lg border border-border p-5 hover:border-accent"
+            class="card-hover block h-full rounded-[3px] border border-border bg-canvas-subtle/40 p-5"
           >
             <div class="flex items-center justify-between gap-2">
               <h3 class="truncate font-mono text-sm font-medium text-ink">{repo.name}</h3>

@@ -9,11 +9,11 @@ import { profile, socialLinks } from '@/data/profile';
 
 <BaseLayout title="Contact" description="Get in touch with Thiago Bueno Garcia.">
   <div class="mx-auto max-w-2xl px-4 py-16 sm:px-6">
-    <SectionHeading eyebrow="Contact" title="Get in touch" as="h1" />
+    <SectionHeading title="Get in touch" as="h1" />
 
     <div class="mt-10 space-y-8">
       <div>
-        <h2 class="text-sm font-semibold uppercase tracking-wide text-ink-muted">
+        <h2 class="text-lg font-semibold text-ink">
           Send a message
         </h2>
         <div class="mt-3">
@@ -22,12 +22,12 @@ import { profile, socialLinks } from '@/data/profile';
       </div>
 
       <div>
-        <h2 class="text-sm font-semibold uppercase tracking-wide text-ink-muted">Elsewhere</h2>
+        <h2 class="text-lg font-semibold text-ink">Elsewhere</h2>
         <ul class="mt-2 space-y-1">
           {
             socialLinks.map((link) => (
               <li>
-                <ExternalLink href={link.url} class="hover-grow text-ink transition-colors hover:text-accent">
+                <ExternalLink href={link.url} class="hover-link text-ink transition-colors hover:text-accent">
                   {link.label}
                 </ExternalLink>
               </li>
@@ -37,7 +37,7 @@ import { profile, socialLinks } from '@/data/profile';
       </div>
 
       <div>
-        <h2 class="text-sm font-semibold uppercase tracking-wide text-ink-muted">Résumé</h2>
+        <h2 class="text-lg font-semibold text-ink">Résumé</h2>
         <div class="mt-3">
           <Button href={profile.resumeUrl} external>Download résumé (PDF)</Button>
         </div>

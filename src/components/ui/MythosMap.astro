@@ -1,0 +1,253 @@
+---
+// Mythos drawn as its real data flow: two inputs (live gear from Blizzard,
+// the seeded Best-in-Slot list) meet in one pure comparison function, which
+// produces the upgrade board. Every claim here is from the Mythos case study
+// (src/content/projects/mythos-wow-bis.md) — keep the two in sync.
+
+interface Props {
+  /** Draw the connectors in on page load. Use once per page, at most. */
+  animate?: boolean;
+  class?: string;
+}
+
+const { animate = false, class: className } = Astro.props;
+---
+
+<figure
+  class:list={['mythos-map', animate && 'is-animated', className]}
+  aria-label="How Mythos works: live gear from the Blizzard API and a Best-in-Slot list both feed compareGear.ts, which produces the upgrade board."
+>
+  <ul class="mythos-sources">
+    <li>
+      <div class="mythos-node">
+        <p class="font-semibold text-ink">Blizzard API</p>
+        <p class="mythos-note">
+          The character&rsquo;s equipped gear. Called only from the server, validated with Zod,
+          cached in Redis.
+        </p>
+      </div>
+    </li>
+    <li>
+      <div class="mythos-node">
+        <p class="font-semibold text-ink">Best-in-Slot list</p>
+        <p class="mythos-note">
+          Seeded per class and spec in PostgreSQL with Drizzle. Season details live in one config
+          file.
+        </p>
+      </div>
+    </li>
+  </ul>
+
+  <div class="mythos-step mythos-step-core">
+    <div class="mythos-node mythos-core">
+      <p class="font-mono font-semibold text-ink">compareGear.ts</p>
+      <p class="mythos-note">
+        A pure function, kept apart from the UI. Rings and trinkets are matched as pairs to find
+        the best assignment.
+      </p>
+    </div>
+  </div>
+
+  <div class="mythos-step mythos-step-output">
+    <div class="mythos-node">
+      <p class="font-semibold text-ink">Upgrade board</p>
+      <p class="mythos-note">What to upgrade next, and where each upgrade comes from.</p>
+    </div>
+  </div>
+</figure>
+
+<style>
+  /*
+   * Connectors live on wrappers (li, .mythos-step), never on the nodes
+   * themselves, so a node fading in can't hide the line drawn into it.
+   *
+   *   [source]   [source]
+   *      |__________|        li::after (drop) + li::before (half of the bus)
+   *            |             .mythos-step::before
+   *         [core]
+   *            |
+   *        [output]
+   */
+  .mythos-map {
+    --line: var(--border-strong);
+    --gap: 0.75rem;
+    --drop: 1.25rem;
+    max-width: 52rem;
+    margin: 0 auto;
+  }
+
+  .mythos-node {
+    height: 100%;
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    background-color: var(--canvas);
+    padding: 0.875rem 1rem;
+  }
+
+  .mythos-core {
+    border-color: var(--accent);
+  }
+
+  .mythos-note {
+    margin-top: 0.25rem;
+    font-size: 0.875rem;
+    line-height: 1.45;
+    color: var(--ink-muted);
+  }
+
+  .mythos-sources {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--gap);
+    list-style: none;
+  }
+
+  .mythos-sources > li {
+    position: relative;
+  }
+
+  /* Drop from each source down to the bus. */
+  .mythos-sources > li::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 100%;
+    height: var(--drop);
+    border-left: 1px solid var(--line);
+  }
+
+  /* Each source owns the half of the bus between its center and the middle. */
+  .mythos-sources > li::before {
+    content: '';
+    position: absolute;
+    top: calc(100% + var(--drop));
+    border-top: 1px solid var(--line);
+  }
+
+  .mythos-sources > li:first-child::before {
+    left: 50%;
+    right: calc(-0.5 * var(--gap));
+  }
+
+  .mythos-sources > li:last-child::before {
+    left: calc(-0.5 * var(--gap));
+    right: 50%;
+  }
+
+  .mythos-step {
+    position: relative;
+    max-width: 30rem;
+    margin-inline: auto;
+    padding-top: var(--drop);
+  }
+
+  .mythos-step-core {
+    margin-top: var(--drop);
+  }
+
+  .mythos-step::before {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 0;
+    height: var(--drop);
+    border-left: 1px solid var(--line);
+  }
+
+  @media (min-width: 768px) {
+    .mythos-map {
+      --gap: 1rem;
+      --drop: 1.5rem;
+    }
+
+    .mythos-node {
+      padding: 1rem 1.125rem;
+      text-align: center;
+    }
+
+    .mythos-note {
+      font-size: 0.9375rem;
+    }
+  }
+
+  /* One orchestrated load, following the data: inputs appear, their lines
+     converge on the core, then the result arrives. */
+  .is-animated .mythos-sources .mythos-node {
+    animation: mythos-fade 400ms ease-out both;
+  }
+
+  .is-animated .mythos-sources > li:last-child .mythos-node {
+    animation-delay: 120ms;
+  }
+
+  .is-animated .mythos-sources > li::after {
+    animation: mythos-draw-down 300ms ease-in-out 450ms both;
+  }
+
+  .is-animated .mythos-sources > li:first-child::before {
+    animation: mythos-draw-right 350ms ease-in-out 750ms both;
+  }
+
+  .is-animated .mythos-sources > li:last-child::before {
+    animation: mythos-draw-left 350ms ease-in-out 750ms both;
+  }
+
+  .is-animated .mythos-step-core::before {
+    animation: mythos-draw-down 250ms ease-in-out 1100ms both;
+  }
+
+  .is-animated .mythos-step-core .mythos-node {
+    animation: mythos-fade 400ms ease-out 1300ms both;
+  }
+
+  .is-animated .mythos-step-output::before {
+    animation: mythos-draw-down 250ms ease-in-out 1650ms both;
+  }
+
+  .is-animated .mythos-step-output .mythos-node {
+    animation: mythos-fade 400ms ease-out 1850ms both;
+  }
+
+  @keyframes mythos-fade {
+    from {
+      opacity: 0;
+      transform: translateY(6px);
+    }
+  }
+
+  @keyframes mythos-draw-down {
+    from {
+      clip-path: inset(0 0 100% 0);
+    }
+    to {
+      clip-path: inset(0 0 0 0);
+    }
+  }
+
+  @keyframes mythos-draw-right {
+    from {
+      clip-path: inset(-1px 100% -1px 0);
+    }
+    to {
+      clip-path: inset(-1px 0 -1px 0);
+    }
+  }
+
+  @keyframes mythos-draw-left {
+    from {
+      clip-path: inset(-1px 0 -1px 100%);
+    }
+    to {
+      clip-path: inset(-1px 0 -1px 0);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .is-animated .mythos-node,
+    .is-animated .mythos-sources > li::before,
+    .is-animated .mythos-sources > li::after,
+    .is-animated .mythos-step::before {
+      animation: none;
+    }
+  }
+</style>

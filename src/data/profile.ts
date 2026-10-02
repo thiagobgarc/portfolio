@@ -7,7 +7,14 @@ export type SocialLink = {
 export const profile = {
   name: 'Thiago Bueno Garcia',
   role: 'Software Engineer',
-  tagline: 'I built the same Portuguese-learning app three times — desktop, mobile, and a GraphQL backend — picking a different architecture each time on purpose.',
+  /** Hero headline: who Thiago is, in one line. Keep it to ~2 lines at display size. */
+  headline: 'Full-stack and mobile engineer who cares how software is built.',
+  /** Hero supporting line: the current project, leading into the diagram below it. */
+  currentFocus:
+    "Right now I'm building Mythos, a World of Warcraft gear planner that compares a character's live gear against Best-in-Slot lists. Here's how it fits together.",
+  /** Meta/OG description. */
+  tagline:
+    'Full-stack and mobile engineer who cares how software is built. Currently building Mythos, a World of Warcraft gear planner.',
   positioning:
     'General Assembly Software Engineering Immersive graduate building full-stack and mobile projects with a strong focus on architecture.',
   location: null as string | null,

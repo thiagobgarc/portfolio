@@ -11,7 +11,7 @@ stack:
   - 'Drizzle ORM'
   - 'Redis'
 repoUrl: 'https://github.com/thiagobgarc/WoW-BiS'
-order: 4
+order: 0
 ---
 
 ## The Problem

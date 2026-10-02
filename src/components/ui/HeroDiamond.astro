@@ -3,7 +3,12 @@
 // frame — genuinely rotating, not a flat static path — drawn as solid,
 // per-facet-shaded polygons with stroked edges on top, rolled onto a
 // dynamic diagonal like a tumbling cut stone. Color always comes from
-// `var(--accent)`.
+// `var(--accent)`, so on the blueprint palette it reads as a gold, topaz-like
+// stone, the socketed gem/loot motif that ties it to Mythos.
+//
+// It idles with a slow turn and can be dragged/swiped: it spins with the
+// drag, keeps momentum on release, and eases back to its idle speed.
+// Decorative (aria-hidden); nothing on the page depends on it.
 ---
 
 <div class="hero-diamond" aria-hidden="true">
@@ -35,12 +40,16 @@
 
 <style>
   .hero-diamond {
-    position: absolute;
-    top: 8%;
-    right: 5%;
-    width: 9rem;
-    z-index: 0;
-    pointer-events: none;
+    width: 100%;
+    /* Horizontal drags spin the gem; vertical swipes still scroll the page. */
+    touch-action: pan-y;
+    cursor: grab;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+
+  .hero-diamond.is-dragging {
+    cursor: grabbing;
   }
 
   .hero-diamond-svg {
@@ -48,28 +57,15 @@
     width: 100%;
     height: auto;
     overflow: visible;
-    /* Grounds the gem with a soft cast shadow — a flat-illustration depth
+    /* Grounds the gem with a soft cast glow — a flat-illustration depth
        cue, standing in for the ambient occlusion a real render would have. */
-    filter: drop-shadow(0 14px 18px color-mix(in oklab, var(--accent) 45%, transparent));
-  }
-
-  @media (min-width: 640px) {
-    .hero-diamond {
-      width: 13rem;
-      top: 6%;
-      right: 4%;
-    }
-  }
-
-  @media (min-width: 900px) {
-    .hero-diamond {
-      width: 20rem;
-      top: 2%;
-      right: 6%;
-    }
+    filter: drop-shadow(0 18px 28px color-mix(in oklab, var(--accent) 35%, transparent));
   }
 
   .hero-diamond-sparkle {
+    /* Scale each sparkle around its own center, not the SVG origin. */
+    transform-box: fill-box;
+    transform-origin: center;
     animation: hero-diamond-twinkle 3.4s ease-in-out infinite;
   }
 
@@ -127,7 +123,9 @@
     const GIRDLE_ANGLE_JITTER = jitterTable(29, SIDES, 4);
     const GIRDLE_RADIUS_JITTER = jitterTable(41, SIDES, 0.08).map((v) => 1 + v);
 
-    const TILT = (-20 * Math.PI) / 180;
+    // Resting lean toward the viewer; vertical drags nudge it and it springs back.
+    const BASE_TILT = (-20 * Math.PI) / 180;
+    let tilt = BASE_TILT;
     // Fixed roll in the picture plane so the gem sits on a dynamic diagonal
     // (like a tumbling stone) instead of standing perfectly upright.
     const ROLL = (28 * Math.PI) / 180;
@@ -156,16 +154,16 @@
       if (shade >= AMBIENT) {
         // Capped well under 100% white so even the brightest glint keeps a
         // trace of the accent hue instead of blowing out to flat grey.
+        // Glints go toward a warm white, not pure white, so they stay golden.
         const t = Math.min(1.6, (shade - AMBIENT) / (1.1 - AMBIENT));
-        const pct = Math.min(58, t * 40);
-        return `color-mix(in oklab, white ${pct.toFixed(1)}%, var(--accent))`;
+        const pct = Math.min(60, t * 34);
+        return `color-mix(in oklab, oklch(98% 0.04 92) ${pct.toFixed(1)}%, var(--accent))`;
       }
-      // Shadow facets mix toward deep indigo rather than flat black — a
-      // colored shadow reads as more dimensional than a grey/black one and
-      // keeps the gem feeling like colored glass instead of tinted plastic.
-      const t = Math.min(1, (AMBIENT - shade) / (AMBIENT - 0.5));
-      const pct = t * 62;
-      return `color-mix(in oklab, oklch(18% 0.09 264) ${pct.toFixed(1)}%, var(--accent))`;
+      // Shadow facets mix toward deep amber-bronze, the gold's own dark
+      // tone. (A cool indigo shadow mixed with gold turns olive and muddy.)
+      const t = Math.min(1, (AMBIENT - shade) / (AMBIENT - 0.4));
+      const pct = t * 78;
+      return `color-mix(in oklab, oklch(30% 0.09 55) ${pct.toFixed(1)}%, var(--accent))`;
     }
 
     function ring(angleJitter, radiusJitter, radiusBase, yBase) {
@@ -217,12 +215,12 @@
     });
     const edges = Array.from(edgeFacetMap.values());
 
-    // fill-opacity < 1 lets facets behind (and the page behind the gem) show
-    // through, like real cut glass rather than a solid plastic shape.
+    // fill-opacity just under 1: a hint of the facets behind shows through,
+    // like cut glass, without the blue page graying the gold out.
     const facetEls = facetIndices.map(() => {
       const el = document.createElementNS('http://www.w3.org/2000/svg', 'path');
       el.setAttribute('fill', 'var(--accent)');
-      el.setAttribute('fill-opacity', '0.62');
+      el.setAttribute('fill-opacity', '0.9');
       el.setAttribute('stroke', 'none');
       facetGroup.appendChild(el);
       return el;
@@ -246,8 +244,8 @@
       const sinT = Math.sin(theta);
       const x1 = v.x * cosT + v.z * sinT;
       const z1 = -v.x * sinT + v.z * cosT;
-      const cosP = Math.cos(TILT);
-      const sinP = Math.sin(TILT);
+      const cosP = Math.cos(tilt);
+      const sinP = Math.sin(tilt);
       return {
         x: x1,
         y: v.y * cosP - z1 * sinP,
@@ -301,7 +299,7 @@
         const diffuse = Math.max(-1, Math.min(1, normal.x * LIGHT.x + normal.y * LIGHT.y + normal.z * LIGHT.z));
         const specDot = Math.max(0, normal.x * HALF.x + normal.y * HALF.y + normal.z * HALF.z);
         const specular = Math.pow(specDot, SHININESS);
-        let shade = 0.8 + diffuse * 0.38 + specular * 0.9;
+        let shade = 0.7 + diffuse * 0.5 + specular * 1.2;
         // The table (index 0) gets a small standing gloss on top of the
         // physical lighting, like light gathering at the very top facet of
         // a real gem — kept to just that facet so it reads as a highlight,
@@ -352,21 +350,111 @@
       });
     }
 
-    render(0);
+    const wrap = document.querySelector('.hero-diamond');
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    // Spin state: angle (rad) and angular velocity (rad/s). Idle is one turn
+    // every 30s; a drag sets the velocity directly, and after release it
+    // decays back toward idle so a flick spins fast, then settles.
+    const IDLE_SPEED = (Math.PI * 2) / 30;
+    const MAX_SPEED = 28;
+    const MAX_TILT_OFFSET = 0.55;
+    let theta = 0;
+    let velocity = reduceMotion ? 0 : IDLE_SPEED;
 
-    // Continuous, slow turn around the vertical axis — one full revolution
-    // every 48s — at the same fixed lean and roll, never pausing.
-    const REVOLUTION_MS = 48000;
-    let start = null;
+    let dragging = false;
+    let lastX = 0;
+    let lastY = 0;
+    let lastMoveTime = 0;
+
+    render(theta);
+    if (!wrap) return;
+
+    wrap.addEventListener('pointerdown', (event) => {
+      dragging = true;
+      lastX = event.clientX;
+      lastY = event.clientY;
+      lastMoveTime = performance.now();
+      velocity = 0;
+      wrap.classList.add('is-dragging');
+      wrap.setPointerCapture(event.pointerId);
+    });
+
+    wrap.addEventListener('pointermove', (event) => {
+      if (!dragging) return;
+      const now = performance.now();
+      const dt = Math.max(1, now - lastMoveTime) / 1000;
+      const size = wrap.getBoundingClientRect().width || 300;
+      // A drag across the gem's full width turns it about 1.5 revolutions.
+      const dTheta = ((event.clientX - lastX) / size) * Math.PI * 3;
+      const dTilt = ((event.clientY - lastY) / size) * -1.4;
+
+      theta += dTheta;
+      tilt = Math.max(BASE_TILT - MAX_TILT_OFFSET, Math.min(BASE_TILT + MAX_TILT_OFFSET, tilt + dTilt));
+      // Smoothed instantaneous speed, so release keeps the flick's momentum.
+      velocity = velocity * 0.5 + (dTheta / dt) * 0.5;
+
+      lastX = event.clientX;
+      lastY = event.clientY;
+      lastMoveTime = now;
+      if (reduceMotion) render(theta);
+    });
+
+    function endDrag() {
+      if (!dragging) return;
+      dragging = false;
+      wrap.classList.remove('is-dragging');
+      // A drag that paused before release shouldn't fling.
+      if (performance.now() - lastMoveTime > 80) velocity = 0;
+      velocity = Math.max(-MAX_SPEED, Math.min(MAX_SPEED, velocity));
+      if (reduceMotion) {
+        velocity = 0;
+        tilt = BASE_TILT;
+        render(theta);
+      }
+    }
+
+    wrap.addEventListener('pointerup', endDrag);
+    wrap.addEventListener('pointercancel', endDrag);
+
+    // With reduced motion the gem only moves while it's being dragged.
+    if (reduceMotion) return;
+
+    let frame = 0;
+    let last = 0;
 
     function tick(now) {
-      if (start === null) start = now;
-      const theta = (((now - start) % REVOLUTION_MS) / REVOLUTION_MS) * Math.PI * 2;
+      const dt = last ? Math.min(0.05, (now - last) / 1000) : 0;
+      last = now;
+
+      if (!dragging) {
+        velocity += (IDLE_SPEED - velocity) * (1 - Math.exp(-dt * 0.9));
+        tilt += (BASE_TILT - tilt) * (1 - Math.exp(-dt * 3));
+        theta += velocity * dt;
+      }
       render(theta);
-      requestAnimationFrame(tick);
+      frame = requestAnimationFrame(tick);
     }
-    requestAnimationFrame(tick);
+
+    // Only animate while the gem is on screen and the tab is visible.
+    let onScreen = true;
+
+    function sync() {
+      const shouldRun = onScreen && !document.hidden;
+      if (shouldRun && !frame) {
+        last = 0;
+        frame = requestAnimationFrame(tick);
+      } else if (!shouldRun && frame) {
+        cancelAnimationFrame(frame);
+        frame = 0;
+      }
+    }
+
+    new IntersectionObserver((entries) => {
+      onScreen = entries.some((entry) => entry.isIntersecting);
+      sync();
+    }).observe(wrap);
+    document.addEventListener('visibilitychange', sync);
+    sync();
   })();
 </script>

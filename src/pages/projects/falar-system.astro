@@ -1,9 +1,11 @@
 ---
 import { getCollection } from 'astro:content';
+import { statusLabel } from '@/lib/utils';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import SectionHeading from '@/components/ui/SectionHeading.astro';
 import Tag from '@/components/ui/Tag.astro';
 import ExternalLink from '@/components/ui/ExternalLink.astro';
+import FalarMap from '@/components/ui/FalarMap.astro';
 
 const allProjects = await getCollection('projects');
 const falarProjects = allProjects
@@ -16,41 +18,21 @@ const falarProjects = allProjects
   description="How the Portuguese-learning desktop app, mobile client, and GraphQL backend share one domain model across three different architectures."
 >
   <div class="mx-auto max-w-3xl px-4 py-16 sm:px-6">
-    <a href="/projects" class="hover-grow text-sm text-ink-muted transition-colors hover:text-ink"
+    <a href="/projects" class="hover-link text-sm text-ink-muted transition-colors hover:text-ink"
       >&larr; All projects</a
     >
 
     <SectionHeading
-      eyebrow="Project system"
       title="Falar: one product, three architectures"
       description="Three repositories, one Brazilian Portuguese learning app, and one shared idea behind all of them."
       as="h1"
     />
 
-    <div class="mt-12 overflow-x-auto">
-      <div class="grid min-w-[640px] grid-cols-3 items-stretch gap-4 text-center">
-        <div class="rounded-lg border border-border p-4">
-          <p class="font-mono text-xs text-ink-muted">Desktop client</p>
-          <p class="mt-1 font-semibold text-ink">portuguese-learning</p>
-          <p class="mt-2 text-xs text-ink-muted">Electron + React</p>
-          <p class="mt-1 text-xs text-ink-muted">Event-sourced domain, in-process</p>
-        </div>
-        <div class="rounded-lg border-2 border-accent p-4">
-          <p class="font-mono text-xs text-accent">Shared contract</p>
-          <p class="mt-1 font-semibold text-ink">falar-portuguese-mobile-backend</p>
-          <p class="mt-2 text-xs text-ink-muted">Apollo Server + PostgreSQL</p>
-          <p class="mt-1 text-xs text-ink-muted">GraphQL API over HTTP</p>
-        </div>
-        <div class="rounded-lg border border-border p-4">
-          <p class="font-mono text-xs text-ink-muted">Mobile client</p>
-          <p class="mt-1 font-semibold text-ink">falar-portuguese-mobile</p>
-          <p class="mt-2 text-xs text-ink-muted">Flutter + Riverpod</p>
-          <p class="mt-1 text-xs text-ink-muted">Fake repo today, GraphQL when live</p>
-        </div>
-      </div>
-      <p class="mt-3 text-center text-xs text-ink-muted" aria-hidden="true">
-        Desktop persists domain events directly &middot; mobile will consume the same rules over
-        GraphQL once the backend is deployed
+    <div class="blueprint-grid -mx-4 mt-12 border-y border-border px-4 py-8 sm:mx-0 sm:border-x sm:px-6">
+      <FalarMap />
+      <p class="mt-6 text-sm text-ink-muted">
+        Desktop persists domain events directly. Mobile will consume the same rules over GraphQL
+        once the backend is deployed.
       </p>
     </div>
 
@@ -81,12 +63,12 @@ const falarProjects = allProjects
         falarProjects.map((project) => (
           <a
             href={`/projects/${project.id}`}
-            class="card-lift block rounded-lg border border-border p-5 hover:border-accent"
+            class="card-hover block rounded-[3px] border border-border bg-canvas-subtle/40 p-5"
           >
             <div class="flex flex-wrap items-center justify-between gap-2">
               <h3 class="font-semibold text-ink">{project.data.title}</h3>
-              <span class="font-mono text-xs text-ink-muted">
-                {project.data.status.replace('-', ' ')}
+              <span class="text-[0.8125rem] text-ink-muted">
+                {statusLabel[project.data.status]}
               </span>
             </div>
             <p class="mt-1 text-sm text-ink-muted">{project.data.summary}</p>
@@ -101,9 +83,9 @@ const falarProjects = allProjects
     </div>
 
     <p class="mt-8 text-sm text-ink-muted">
-      Each repository is public: <ExternalLink href="https://github.com/thiagobgarc/portuguese-learning" class="hover-grow text-accent">portuguese-learning</ExternalLink>,{' '}
-      <ExternalLink href="https://github.com/thiagobgarc/falar-portuguese-mobile-backend" class="hover-grow text-accent">falar-portuguese-mobile-backend</ExternalLink>,{' '}
-      <ExternalLink href="https://github.com/thiagobgarc/falar-portuguese-mobile" class="hover-grow text-accent">falar-portuguese-mobile</ExternalLink>.
+      Each repository is public: <ExternalLink href="https://github.com/thiagobgarc/portuguese-learning" class="hover-link text-ink">portuguese-learning</ExternalLink>,{' '}
+      <ExternalLink href="https://github.com/thiagobgarc/falar-portuguese-mobile-backend" class="hover-link text-ink">falar-portuguese-mobile-backend</ExternalLink>,{' '}
+      <ExternalLink href="https://github.com/thiagobgarc/falar-portuguese-mobile" class="hover-link text-ink">falar-portuguese-mobile</ExternalLink>.
     </p>
   </div>
 </BaseLayout>

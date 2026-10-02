@@ -1,0 +1,257 @@
+---
+// The Falar system drawn as what it is: one set of domain rules, implemented
+// three times. Titles, links, and status come from the `projects` collection
+// so the drawing can't drift from the case studies; the one-line architecture
+// notes are summaries of those case studies, kept here because the schema has
+// no field for them.
+import { getCollection } from 'astro:content';
+import { statusLabel } from '@/lib/utils';
+
+interface Props {
+  /** Draw the connectors in on page load. Use once per page, at most. */
+  animate?: boolean;
+  class?: string;
+}
+
+const { animate = false, class: className } = Astro.props;
+
+const notes: Record<string, { platform: string; architecture: string; stack: string }> = {
+  'portuguese-learning': {
+    platform: 'Desktop',
+    architecture: 'Event-sourced, so every review and mistake is kept as history.',
+    stack: 'Electron, React, PostgreSQL',
+  },
+  'falar-portuguese-mobile': {
+    platform: 'Mobile',
+    architecture: 'Runs on fake repositories until the API is deployed.',
+    stack: 'Flutter, Riverpod',
+  },
+  'falar-portuguese-mobile-backend': {
+    platform: 'API',
+    architecture: 'A modular monolith that stores current state, not history.',
+    stack: 'Apollo Server, PostgreSQL',
+  },
+};
+
+
+const nodes = (await getCollection('projects'))
+  .filter((p) => p.data.system === 'falar')
+  .sort((a, b) => a.data.order - b.data.order)
+  .flatMap((p) => {
+    const note = notes[p.id];
+    if (!note) return [];
+    return [{ ...note, href: `/projects/${p.id}`, repo: p.id, status: statusLabel[p.data.status] }];
+  });
+---
+
+<figure class:list={['falar-map', animate && 'is-animated', className]}>
+  <div class="falar-root">
+    <p class="font-semibold text-ink">Shared domain rules</p>
+    <p class="mt-1 text-[0.9375rem] text-ink-muted">
+      Review scoring and the mastery model. The same ideas, implemented three ways.
+    </p>
+  </div>
+
+  <ul class="falar-branches">
+    {
+      nodes.map((node) => (
+        <li>
+          <a href={node.href} class="falar-node card-hover">
+            <span class="flex items-baseline justify-between gap-3">
+              <span class="font-semibold text-ink">{node.platform}</span>
+              <span class="text-[0.8125rem] text-ink-muted">{node.status}</span>
+            </span>
+            <span class="mt-0.5 block font-mono text-[0.8125rem] text-ink-muted">{node.repo}</span>
+            <span class="mt-2 block text-[0.9375rem] leading-snug text-ink-muted">
+              {node.architecture}
+            </span>
+            <span class="mt-3 block text-[0.8125rem] text-ink-muted">{node.stack}</span>
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+</figure>
+
+<style>
+  .falar-map {
+    --line: var(--border-strong);
+    --gap: 1rem;
+    --drop: 1.75rem;
+    margin: 0;
+  }
+
+  .falar-root,
+  .falar-node {
+    display: block;
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    background-color: var(--canvas);
+    padding: 1rem 1.125rem;
+  }
+
+  .falar-root {
+    position: relative;
+    border-color: var(--accent);
+  }
+
+  .falar-branches {
+    position: relative;
+    display: grid;
+    gap: var(--gap);
+    margin-top: var(--gap);
+    padding-left: 1.5rem;
+    list-style: none;
+  }
+
+  .falar-branches > li {
+    position: relative;
+  }
+
+  /* Narrow screens: a spine down the left, with an elbow into each node. */
+  .falar-branches > li::before {
+    content: '';
+    position: absolute;
+    left: -0.75rem;
+    top: calc(-1 * var(--gap));
+    width: 0.75rem;
+    height: calc(var(--gap) + 1.6rem);
+    border-left: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+  }
+
+  .falar-branches > li:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    left: -0.75rem;
+    top: 1.6rem;
+    bottom: calc(-1 * var(--gap));
+    border-left: 1px solid var(--line);
+  }
+
+  .falar-node {
+    height: 100%;
+  }
+
+  /* Wide screens: the root sits centered above three columns, joined by a
+     bus line — the usual way a tree is drawn on paper. */
+  @media (min-width: 768px) {
+    .falar-root {
+      max-width: 28rem;
+      margin-inline: auto;
+      text-align: center;
+    }
+
+    .falar-root::after {
+      content: '';
+      position: absolute;
+      left: 50%;
+      top: 100%;
+      height: var(--drop);
+      border-left: 1px solid var(--line);
+    }
+
+    .falar-branches {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      margin-top: var(--drop);
+      padding-top: var(--drop);
+      padding-left: 0;
+    }
+
+    .falar-branches::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: calc((100% - 2 * var(--gap)) / 6);
+      right: calc((100% - 2 * var(--gap)) / 6);
+      border-top: 1px solid var(--line);
+    }
+
+    .falar-branches > li::before {
+      left: 50%;
+      top: calc(-1 * var(--drop));
+      width: 0;
+      height: var(--drop);
+      border-bottom: 0;
+    }
+
+    .falar-branches > li:not(:last-child)::after {
+      content: none;
+    }
+  }
+
+  /* One orchestrated load: root appears, lines draw outward, then the three
+     implementations arrive left to right. */
+  .is-animated .falar-root {
+    animation: falar-fade 400ms ease-out both;
+  }
+
+  .is-animated .falar-root::after,
+  .is-animated .falar-branches > li::before,
+  .is-animated .falar-branches > li::after {
+    animation: falar-draw-down 350ms ease-in-out both;
+    animation-delay: 350ms;
+  }
+
+  .is-animated .falar-branches::before {
+    animation: falar-draw-across 450ms ease-in-out both;
+    animation-delay: 650ms;
+  }
+
+  .is-animated .falar-node {
+    animation: falar-fade 450ms ease-out both;
+  }
+
+  .is-animated li:nth-child(1) .falar-node {
+    animation-delay: 1150ms;
+  }
+  .is-animated li:nth-child(2) .falar-node {
+    animation-delay: 1275ms;
+  }
+  .is-animated li:nth-child(3) .falar-node {
+    animation-delay: 1400ms;
+  }
+
+  @media (min-width: 768px) {
+    .is-animated .falar-branches > li::before {
+      animation-delay: 1000ms;
+      animation-duration: 250ms;
+    }
+  }
+
+  @keyframes falar-fade {
+    from {
+      opacity: 0;
+      transform: translateY(6px);
+    }
+  }
+
+  @keyframes falar-draw-down {
+    from {
+      clip-path: inset(0 0 100% 0);
+    }
+    to {
+      clip-path: inset(0 0 0 0);
+    }
+  }
+
+  @keyframes falar-draw-across {
+    from {
+      clip-path: inset(0 50% 0 50%);
+    }
+    to {
+      clip-path: inset(0 0 0 0);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .is-animated .falar-root,
+    .is-animated .falar-root::after,
+    .is-animated .falar-branches::before,
+    .is-animated .falar-branches > li::before,
+    .is-animated .falar-branches > li::after,
+    .is-animated .falar-node {
+      animation: none;
+    }
+  }
+</style>

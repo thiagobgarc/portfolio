@@ -13,11 +13,11 @@ const OUT_DIR = join(ROOT, 'public/images/og');
 const DEFAULT_OUT = join(ROOT, 'public/images/og-default.png');
 
 const COLORS = {
-  canvas: '#101319',
-  accent: '#38b6a8',
-  ink: '#f5f5f4',
-  inkMuted: '#a3a7ae',
-  mutedDim: '#6b7078',
+  canvas: '#0f1e36',
+  accent: '#e8b63e',
+  ink: '#e6edf6',
+  inkMuted: '#94a7c2',
+  mutedDim: '#5f7699',
 };
 
 function escapeXml(value) {

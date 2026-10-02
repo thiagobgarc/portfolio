@@ -8,7 +8,7 @@ const items = writingEnabled ? [...primaryNav, { label: 'Writing', href: '/writi
   <button
     id="mobile-nav-toggle"
     type="button"
-    class="rounded-md p-2 text-ink-muted hover:bg-canvas-subtle hover:text-ink"
+    class="-mr-2 rounded-[3px] p-[11px] text-ink-muted hover:bg-canvas-subtle hover:text-ink"
     aria-label="Open navigation menu"
     aria-expanded="false"
     aria-controls="mobile-nav-panel"
@@ -34,7 +34,7 @@ const items = writingEnabled ? [...primaryNav, { label: 'Writing', href: '/writi
             <li>
               <a
                 href={item.href}
-                class="block rounded-md px-3 py-2 text-base font-medium text-ink hover:bg-canvas-subtle"
+                class="flex min-h-11 items-center rounded-[3px] px-3 text-base font-medium text-ink hover:bg-canvas-subtle"
               >
                 {item.label}
               </a>

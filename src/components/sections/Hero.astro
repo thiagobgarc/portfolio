@@ -1,229 +1,44 @@
 ---
 import Button from '@/components/ui/Button.astro';
 import HeroDiamond from '@/components/ui/HeroDiamond.astro';
+import MythosMap from '@/components/ui/MythosMap.astro';
 import { profile } from '@/data/profile';
 ---
 
-<section class="relative overflow-hidden">
-  <canvas id="hero-matrix-rain" class="matrix-rain pointer-events-none absolute inset-0 h-full w-full" aria-hidden="true"
-  ></canvas>
-  <svg
-    id="hero-flow"
-    class="flow-ribbon pointer-events-none absolute inset-0 h-full w-full"
-    viewBox="0 0 1200 500"
-    preserveAspectRatio="none"
-    aria-hidden="true"
+<section>
+  <!-- Mobile: the gem sits small beside the name. Desktop: it gets its own
+       column beside the headline, spanning all four rows. -->
+  <div
+    class="mx-auto grid max-w-content grid-cols-[minmax(0,1fr)_6.5rem] gap-x-4 px-4 pt-10 pb-12 sm:grid-cols-[minmax(0,1fr)_9rem] sm:px-6 sm:pt-16 sm:pb-16 lg:grid-cols-[minmax(0,1fr)_minmax(16rem,21rem)] lg:gap-x-12"
   >
-    <defs>
-      <!-- Horizontal, viewBox-anchored (not corner-anchored): fades in over
-           the first 15% of the width and out over the last 15%, entirely
-           inside the visible 0-1200 area. Because the fade tracks x position
-           rather than a fixed diagonal, the wave always dims to nothing
-           before it reaches the edge, however it happens to be undulating
-           vertically at that moment — no more hard cutoff at the frame. -->
-      <linearGradient id="flow-gradient-back" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="1200" y2="0">
-        <stop offset="0%" stop-color="var(--accent)" stop-opacity="0" />
-        <stop offset="15%" stop-color="var(--accent)" stop-opacity="0.3" />
-        <stop offset="85%" stop-color="var(--accent)" stop-opacity="0.3" />
-        <stop offset="100%" stop-color="var(--accent)" stop-opacity="0" />
-      </linearGradient>
-      <linearGradient id="flow-gradient-front" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="1200" y2="0">
-        <stop offset="0%" stop-color="var(--accent)" stop-opacity="0" />
-        <stop offset="15%" stop-color="var(--accent)" stop-opacity="0.5" />
-        <stop offset="50%" stop-color="color-mix(in oklch, var(--accent) 55%, white)" stop-opacity="0.7" />
-        <stop offset="85%" stop-color="var(--accent)" stop-opacity="0.5" />
-        <stop offset="100%" stop-color="var(--accent)" stop-opacity="0" />
-      </linearGradient>
-      <filter id="flow-blur-back" x="-50%" y="-50%" width="200%" height="200%">
-        <feGaussianBlur stdDeviation="14" />
-      </filter>
-      <filter id="flow-blur-front" x="-50%" y="-50%" width="200%" height="200%">
-        <feGaussianBlur stdDeviation="8" />
-      </filter>
-    </defs>
-    <g>
-      <path class="flow-wave flow-wave-back-glow" data-layer="back" fill="none" stroke="url(#flow-gradient-back)" stroke-width="46" stroke-linecap="round" filter="url(#flow-blur-back)" />
-      <path class="flow-wave flow-wave-back" data-layer="back" fill="none" stroke="url(#flow-gradient-back)" stroke-width="18" stroke-linecap="round" />
-      <path class="flow-wave flow-wave-front-glow" data-layer="front" fill="none" stroke="url(#flow-gradient-front)" stroke-width="20" stroke-linecap="round" filter="url(#flow-blur-front)" />
-      <path class="flow-wave flow-wave-front" data-layer="front" fill="none" stroke="url(#flow-gradient-front)" stroke-width="3.5" stroke-linecap="round" />
-    </g>
-  </svg>
-  <HeroDiamond />
-  <div class="relative mx-auto max-w-content px-4 py-20 sm:px-6 sm:py-28">
-    <p class="font-mono text-lg font-semibold uppercase tracking-wide text-accent sm:text-xl">
-      {profile.role}
-    </p>
-    <h1 class="mt-3 max-w-3xl text-4xl font-semibold tracking-tight text-ink sm:text-5xl">
-      {profile.name}
+    <h1 class="col-start-1 row-start-1 self-center text-lg leading-snug font-semibold text-ink">
+      {profile.name}<span class="sr-only">, {profile.role}</span>
     </h1>
-    <p class="mt-3 max-w-2xl text-base italic text-ink-muted sm:text-lg">
-      &ldquo;{profile.bioQuote}&rdquo;
+    <div class="col-start-2 row-start-1 lg:row-span-4 lg:self-center">
+      <HeroDiamond />
+    </div>
+    <p
+      class="col-span-2 row-start-2 mt-5 max-w-[20ch] text-[clamp(2.125rem,5vw,3.75rem)] leading-[1.05] font-semibold tracking-[-0.03em] text-ink lg:col-span-1"
+    >
+      {profile.headline}
     </p>
-    <div class="mt-8 flex flex-wrap gap-3">
-      <Button href="/projects">View projects</Button>
-      <Button href={profile.resumeUrl} variant="secondary" external>Resume</Button>
-      <Button href="/contact" variant="secondary">Contact</Button>
+    <p class="col-span-2 row-start-3 mt-6 max-w-[52ch] text-lg leading-relaxed text-ink-muted lg:col-span-1">
+      {profile.currentFocus}
+    </p>
+    <div class="col-span-2 row-start-4 mt-8 flex flex-wrap items-center gap-3 lg:col-span-1">
+      <Button href="/projects/mythos-wow-bis">Read the Mythos case study</Button>
+      <Button href={profile.resumeUrl} variant="secondary" external>Résumé (PDF)</Button>
+      <a href="/projects" class="hover-link text-[0.9375rem] sm:ml-2 font-medium text-ink">All projects</a>
+    </div>
+  </div>
+
+  <div class="blueprint-grid border-y border-border">
+    <div class="mx-auto max-w-[56rem] px-4 py-10 sm:px-6 sm:py-14">
+      <MythosMap animate />
+      <p class="mt-8 text-[0.9375rem] text-ink-muted">
+        In progress. The Blizzard integration, comparison engine, and tests work end to end. Next:
+        current-season Best-in-Slot data and a first production deploy.
+      </p>
     </div>
   </div>
 </section>
-
-<style>
-  .matrix-rain {
-    z-index: 0;
-    opacity: 0.3;
-  }
-
-  .flow-ribbon {
-    z-index: 0;
-  }
-</style>
-
-<script is:inline>
-  (function () {
-    // Two glowing bands whose *shape* undulates like a travelling sine wave —
-    // not just a static curve with a highlight sliding along it — closer to
-    // the PS4 startup "flow" look. Each frame resamples the curve at a few
-    // points and threads a smooth quadratic path through them, then nudges
-    // the phase forward so the wave appears to flow sideways.
-    const svg = document.getElementById('hero-flow');
-    if (!svg) return;
-
-    const WIDTH = 1200;
-    const POINTS = 18;
-
-    const layers = [
-      {
-        selector: '[data-layer="back"]',
-        amplitude: 55,
-        wavelength: 620,
-        yBase: 330,
-        speed: 0.35,
-        phase: 0,
-      },
-      {
-        selector: '[data-layer="front"]',
-        amplitude: 34,
-        wavelength: 420,
-        yBase: 250,
-        speed: -0.55,
-        phase: 2,
-      },
-    ];
-
-    layers.forEach((layer) => {
-      layer.els = svg.querySelectorAll(layer.selector);
-    });
-
-    function wavePath(amplitude, wavelength, phase, yBase) {
-      const step = (WIDTH + 200) / (POINTS - 1);
-      const pts = [];
-      for (let i = 0; i < POINTS; i++) {
-        const x = -100 + i * step;
-        const y = yBase + amplitude * Math.sin((2 * Math.PI * x) / wavelength + phase);
-        pts.push([x, y]);
-      }
-      let d = `M ${pts[0][0]} ${pts[0][1]}`;
-      for (let i = 1; i < pts.length - 1; i++) {
-        const [cx, cy] = pts[i];
-        const [nx, ny] = pts[i + 1];
-        d += ` Q ${cx} ${cy} ${(cx + nx) / 2} ${(cy + ny) / 2}`;
-      }
-      const last = pts[pts.length - 1];
-      d += ` L ${last[0]} ${last[1]}`;
-      return d;
-    }
-
-    function render() {
-      layers.forEach((layer) => {
-        const d = wavePath(layer.amplitude, layer.wavelength, layer.phase, layer.yBase);
-        layer.els.forEach((el) => el.setAttribute('d', d));
-      });
-    }
-
-    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    render();
-    if (reduceMotion) return;
-
-    let last = performance.now();
-    function tick(now) {
-      const dt = (now - last) / 1000;
-      last = now;
-      layers.forEach((layer) => {
-        layer.phase += layer.speed * dt;
-      });
-      render();
-      requestAnimationFrame(tick);
-    }
-    requestAnimationFrame(tick);
-  })();
-</script>
-
-<script is:inline>
-  (function () {
-    // Digital-rain backdrop behind the wave/diamond graphic. Colors are read
-    // from the theme's CSS custom properties (not hardcoded) so it follows
-    // light/dark and the site accent automatically.
-    const canvas = document.getElementById('hero-matrix-rain');
-    if (!canvas) return;
-
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
-
-    const FONT_SIZE = 16;
-    const SPEED_MS = 60;
-    const CHARS =
-      'ｦｧｨｩｪｫｬｭｮｯｰｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉﾊﾋﾌﾍﾎﾏﾐﾑﾒﾓﾔﾕﾖﾗﾘﾙﾚﾛﾜﾝ0123456789';
-
-    let drops = [];
-
-    function themeColor(name) {
-      return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
-    }
-
-    function resize() {
-      canvas.width = canvas.offsetWidth;
-      canvas.height = canvas.offsetHeight;
-      const columns = Math.max(1, Math.floor(canvas.width / FONT_SIZE));
-      // Stagger starting positions above the frame so drops don't all begin
-      // in sync on load.
-      drops = new Array(columns).fill(0).map(() => Math.floor(Math.random() * -20));
-      ctx.fillStyle = themeColor('--canvas');
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-    }
-
-    function draw() {
-      // Translucent overlay in the canvas background color fades old
-      // glyphs into the backdrop, leaving a trailing streak.
-      ctx.globalAlpha = 0.06;
-      ctx.fillStyle = themeColor('--canvas');
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-      ctx.globalAlpha = 1;
-
-      ctx.font = `${FONT_SIZE}px monospace`;
-      ctx.fillStyle = themeColor('--accent');
-
-      for (let i = 0; i < drops.length; i++) {
-        const y = drops[i] * FONT_SIZE;
-        if (y > 0) {
-          const char = CHARS[Math.floor(Math.random() * CHARS.length)];
-          ctx.fillText(char, i * FONT_SIZE, y);
-        }
-
-        if (y > canvas.height && Math.random() > 0.975) {
-          drops[i] = 0;
-        }
-        drops[i]++;
-      }
-    }
-
-    const resizeObserver = new ResizeObserver(resize);
-    resizeObserver.observe(canvas);
-    resize();
-
-    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    draw();
-    if (reduceMotion) return;
-
-    setInterval(draw, SPEED_MS);
-  })();
-</script>
