@@ -7,24 +7,26 @@ import { profile } from '@/data/profile';
 
 <section>
   <!-- Mobile: the gem sits small beside the name. Desktop: it gets its own
-       column beside the headline, spanning all three rows. -->
+       column beside the headline, spanning all four rows. -->
   <div
     class="mx-auto grid max-w-content grid-cols-[minmax(0,1fr)_6.5rem] gap-x-4 px-4 pt-10 pb-12 sm:grid-cols-[minmax(0,1fr)_9rem] sm:px-6 sm:pt-16 sm:pb-16 lg:grid-cols-[minmax(0,1fr)_minmax(16rem,21rem)] lg:gap-x-12"
   >
-    <h1 class="col-start-1 row-start-1 self-center text-lg leading-snug">
-      <span class="block font-semibold text-ink">{profile.name}</span>
-      <span class="block text-ink-muted">{profile.role}</span>
+    <h1 class="col-start-1 row-start-1 self-center text-lg leading-snug font-semibold text-ink">
+      {profile.name}<span class="sr-only">, {profile.role}</span>
     </h1>
-    <div class="col-start-2 row-start-1 lg:row-span-3 lg:self-center">
+    <div class="col-start-2 row-start-1 lg:row-span-4 lg:self-center">
       <HeroDiamond />
     </div>
     <p
-      class="col-span-2 row-start-2 mt-6 max-w-[28ch] text-[clamp(1.875rem,4.4vw,3.25rem)] leading-[1.08] font-semibold tracking-[-0.025em] text-ink lg:col-span-1"
+      class="col-span-2 row-start-2 mt-5 max-w-[20ch] text-[clamp(2.125rem,5vw,3.75rem)] leading-[1.05] font-semibold tracking-[-0.03em] text-ink lg:col-span-1"
     >
-      {profile.tagline}
+      {profile.headline}
     </p>
-    <div class="col-span-2 row-start-3 mt-9 flex flex-wrap items-center gap-3 lg:col-span-1">
-      <Button href="/projects/mythos-wow-bis">Read the case study</Button>
+    <p class="col-span-2 row-start-3 mt-6 max-w-[52ch] text-lg leading-relaxed text-ink-muted lg:col-span-1">
+      {profile.currentFocus}
+    </p>
+    <div class="col-span-2 row-start-4 mt-8 flex flex-wrap items-center gap-3 lg:col-span-1">
+      <Button href="/projects/mythos-wow-bis">Read the Mythos case study</Button>
       <Button href={profile.resumeUrl} variant="secondary" external>Résumé (PDF)</Button>
       <a href="/projects" class="hover-link text-[0.9375rem] sm:ml-2 font-medium text-ink">All projects</a>
     </div>
