@@ -8,15 +8,15 @@ export const profile = {
   name: 'Thiago Bueno Garcia',
   role: 'Software Engineer',
   /** Hero headline: who Thiago is, in one line. Keep it to ~2 lines at display size. */
-  headline: 'Full-stack and mobile engineer who cares how software is built.',
-  /** Hero supporting line: the current project, leading into the diagram below it. */
+  headline: 'Software engineer who loves building projects from idea to launch.',
+  /** Hero supporting line: the latest shipped project, leading into the diagram below it. */
   currentFocus:
-    "Right now I'm building Mythos, a World of Warcraft gear planner that compares a character's live gear against Best-in-Slot lists. Here's how it fits together.",
+    'My latest is Mythos, a World of Warcraft gear planner that compares a character’s live gear against Best-in-Slot lists. It is live at mythosbis.com. Here is how it fits together.',
   /** Meta/OG description. */
   tagline:
-    'Full-stack and mobile engineer who cares how software is built. Currently building Mythos, a World of Warcraft gear planner.',
+    'Software engineer who loves building projects from idea to launch. Built and shipped Mythos, a World of Warcraft gear planner live at mythosbis.com.',
   positioning:
-    'General Assembly Software Engineering Immersive graduate building full-stack and mobile projects with a strong focus on architecture.',
+    'General Assembly Software Engineering Immersive graduate who builds full-stack projects from the first commit to a live site.',
   location: null as string | null,
   email: 'thiagobgsoftware@gmail.com' as string | null,
   /**

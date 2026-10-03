@@ -1,7 +1,7 @@
 ---
 title: 'Mythos — WoW Gear Planner'
 summary: 'Look up a World of Warcraft character, pull their live gear from the Blizzard API, and compare it slot-by-slot against a seeded Best-in-Slot list for their class and spec.'
-status: 'in-progress'
+status: 'complete'
 role: 'Solo'
 stack:
   - 'Astro'
@@ -11,6 +11,7 @@ stack:
   - 'Drizzle ORM'
   - 'Redis'
 repoUrl: 'https://github.com/thiagobgarc/WoW-BiS'
+liveUrl: 'https://mythosbis.com'
 order: 0
 ---
 
@@ -34,6 +35,7 @@ should upgrade and where those upgrades come from.
 - **Zod** — validating API responses
 - **Vitest** — unit testing
 - **Playwright** — end-to-end testing
+- **Vercel** — hosting, with every push to `main` deploying to production
 
 I kept React limited to the parts that actually need it, like the search form, paper doll, and
 upgrade board. Everything else stays static or server-rendered.
@@ -71,9 +73,14 @@ information was a contained change instead of requiring changes throughout the a
 
 ## Status
 
-**In progress.**
+**Complete. Live at [mythosbis.com](https://mythosbis.com).**
 
-The architecture, Blizzard integration, comparison engine, and tests are working end to end.
+You can look up any character, see a paper doll of their current gear, and get an upgrade board
+with every slot that still needs work. There are also BiS gear pages and talent builds for every
+class and spec.
 
-The main thing left is updating the BiS data for the current season and getting the first
-production deployment running.
+The site is hosted on Vercel. Work happens on a `development` branch and gets merged into `main`
+when it is ready. Every push to `main` goes straight to production.
+
+Also, the repo is now a monorepo. The web app and a React Native app share the same domain logic
+from one `core` package, so the comparison engine only lives in one place.
