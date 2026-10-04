@@ -27,6 +27,7 @@ import { profile } from '@/data/profile';
     </p>
     <div class="col-span-2 row-start-4 mt-8 flex flex-wrap items-center gap-3 lg:col-span-1">
       <Button href="/projects/mythos-wow-bis">Read the Mythos case study</Button>
+      <Button href="https://mythosbis.com" variant="secondary" external>Visit mythosbis.com</Button>
       <Button href={profile.resumeUrl} variant="secondary" external>Résumé (PDF)</Button>
       <a href="/projects" class="hover-link text-[0.9375rem] sm:ml-2 font-medium text-ink">All projects</a>
     </div>
@@ -35,9 +36,10 @@ import { profile } from '@/data/profile';
   <div class="blueprint-grid border-y border-border">
     <div class="mx-auto max-w-[56rem] px-4 py-10 sm:px-6 sm:py-14">
       <MythosMap animate />
-      <p class="mt-8 text-[0.9375rem] text-ink-muted">
-        In progress. The Blizzard integration, comparison engine, and tests work end to end. Next:
-        current-season Best-in-Slot data and a first production deploy.
+      <p class="mt-8 text-center text-[0.9375rem] text-ink-muted">
+        Complete and live at{' '}
+        <a href="https://mythosbis.com" class="hover-link font-medium text-ink" target="_blank" rel="noopener noreferrer">mythosbis.com</a>.
+        Every push to <code>main</code> deploys to production on Vercel.
       </p>
     </div>
   </div>

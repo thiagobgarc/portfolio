@@ -26,6 +26,5 @@ export const education: EducationEntry[] = [
 
 export const currentActivity: ActivityEntry[] = [
   { label: "Building a website for my father's company" },
-  { label: 'Building a language app for people to learn Brazilian Portuguese' },
   { label: 'Expanding technical knowledge and networking' },
 ];

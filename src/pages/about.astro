@@ -12,21 +12,28 @@ import { education, currentActivity } from '@/data/experience';
   <div class="mx-auto max-w-3xl px-4 py-16 sm:px-6">
     <SectionHeading title={profile.name} as="h1" />
 
-    <div class="prose prose-neutral mt-8 max-w-none prose-p:text-ink-muted prose-strong:text-ink">
+    <div class="prose prose-neutral prose-invert prose-li:text-ink-muted prose-code:before:content-none prose-code:after:content-none mt-8 max-w-none prose-p:text-ink-muted prose-strong:text-ink">
       <p>
-        One day I decided to make the change and challenge myself to become a software engineer,
-        enrolling at General Assembly. The hours were long, and understanding code was like
-        learning a foreign language &mdash; but I was determined to keep going, to better not
-        just my own life, but my family&rsquo;s. Somewhere in that process I learned to enjoy not
-        just writing code, but the architecture that holds a codebase together: building
-        something that&rsquo;s actually understandable.
+        One day I decided to make a change and challenge myself to become a software engineer. I
+        enrolled at General Assembly. The hours were long, and learning to code felt like learning
+        a new language. I kept going because I wanted a better life for myself and for my family.
       </p>
       <p>
-        Currently {profile.currentlyBuilding}, reading Clean Architecture: A Craftsman&rsquo;s
-        Guide to Software Structure and Design, and looking to expand both technical depth and
-        network. Off the keyboard: {profile.interests.join(
-          ', ',
-        )}.
+        What kept me going was building things. I enjoy taking an idea and turning it into
+        something people can use. I also care about how the pieces fit together, so the code still
+        makes sense when I come back to it months later.
+      </p>
+      <p>
+        Mythos is the best example of that. I play World of Warcraft, and figuring out my next gear
+        upgrade meant jumping between an armory page, a BiS list and a few loot tables. So I built
+        a tool to do it for me. It is now live at{' '}
+        <a href="https://mythosbis.com" class="hover-link font-medium text-ink no-underline" target="_blank" rel="noopener noreferrer">mythosbis.com</a>,
+        and anyone can use it.
+      </p>
+      <p>
+        Right now I am {profile.currentlyBuilding} and reading Clean Architecture by Robert C.
+        Martin. I am always looking for the next thing to build and people to learn from. Outside
+        of code, I enjoy {profile.interests.join(', ')}.
       </p>
       <blockquote>
         <p>&ldquo;{profile.bioQuote}&rdquo;</p>
